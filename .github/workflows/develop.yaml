@@ -1,13 +1,13 @@
-name: 'Develop - GitHub Actions'
+# name: 'Develop - GitHub Actions'
 
-on:
-  pull_request:
-    branches:
-      - develop
+# on:
+#   pull_request:
+#     branches:
+#       - develop
 
-env:
-    tf_version: 'latest'
-    tf_working_dir: './tf-automation'
-    env: 'dev'
-    aws_region: 'ap-southeast-2'
-    artifacts_bucket: 'mamip-artifacts'
+# env:
+#     tf_version: 'latest'
+#     tf_working_dir: './tf-automation'
+#     env: 'dev'
+#     aws_region: 'ap-southeast-2'
+#     artifacts_bucket: 'mamip-artifacts'
