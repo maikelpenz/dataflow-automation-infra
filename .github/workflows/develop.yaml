@@ -3,7 +3,7 @@ name: 'Develop - GitHub Actions'
 on:
   push:
     branches:
-    - develop
+    - develops
 
 env:
     tf_version: 'latest'
