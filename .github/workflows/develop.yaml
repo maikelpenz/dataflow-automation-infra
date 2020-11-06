@@ -1,9 +1,9 @@
 name: 'Develop - GitHub Actions'
 
 on:
-  push:
+  pull_request:
     branches:
-        - master
+      - develop
 
 env:
     tf_version: 'latest'
