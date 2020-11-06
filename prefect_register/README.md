@@ -1,0 +1,1 @@
+python -m prefect_register.register_workflows

@@ -5,7 +5,10 @@
             "Effect": "Allow",
             "Action": [
                 "ecr:*",
-                "logs:*"
+                "ecs:*",
+                "logs:*",
+                "secretsmanager:*",
+                "iam:PassRole"
             ],
             "Resource": "*"
         }

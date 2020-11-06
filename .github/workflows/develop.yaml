@@ -1,21 +1,137 @@
-name: 'Develop - GitHub Actions'
+name: 'GitHub Actions - Dev Stack'
 
 on:
   push:
     branches:
-      - develop
+      - 'feature/**'
 
-# env:
-#     tf_version: 'latest'
-#     tf_working_dir: './tf-automation'
-#     env: 'dev'
-#     aws_region: 'ap-southeast-2'
-#     artifacts_bucket: 'mamip-artifacts'
+env:
+    # global
+    env: 'dev'
+    aws_region: 'ap-southeast-2'
+    # terraform
+    tf_version: 'latest'
+    tf_working_dir: './terraform_infra'
+    tf_artifacts_bucket: 'dataflow-automation-infra-artifacts'
+    tf_state_bucket: 'dataflow-automation-infra-tf-state'
+    # prefect agent
+    agent_cpu: 512
+    agent_memory: 1024
+
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  terraform-infrastructure:
+    name: Terraform Infrastructure
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout'
+      - name: Checkout
         uses: actions/checkout@master
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.tf_version }}
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        id: init
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform init -backend-config="bucket=${{ env.tf_state_bucket }}" -backend-config="key=${{ env.env }}/terraform.tfstate"
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform plan -var-file="configuration/${{ env.env }}.tfvars" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
+
+      - name: Terraform Apply
+        id: apply
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform apply -auto-approve -var-file="configuration/${{ env.env }}.tfvars" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
+
+      - name: Terraform Outputs
+        run: |
+          cd ${{ env.tf_working_dir }}
+          output=$(terraform output --json)
+          echo $output >> /tmp/tf_outputs.json
+
+      - name: Upload Terraform Outputs Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tf_outputs
+          path: /tmp/tf_outputs.json
+          retention-days: 5
+
+  prefect-agent-container:
+    needs: terraform-infrastructure
+    name: Prefect Agent Build and Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Download Terraform Outputs Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: tf_outputs
+          path: /tmp/
+
+      - name: Read Terraform Outputs
+        id: read_tf_outputs
+        run: |
+          sudo apt-get install jq -y
+          tf_outputs_json=$(less /tmp/tf_outputs.json)
+          
+          agent_ecs_cluster_name=$(jq -r '.agent_ecs_cluster_name.value' <<< "$tf_outputs_json")
+          agent_ecs_task_execution_role_arn=$(jq -r '.agent_ecs_task_execution_role_arn.value' <<< "$tf_outputs_json")
+          agent_ecs_task_role_arn=$(jq -r '.agent_ecs_task_role_arn.value' <<< "$tf_outputs_json")
+          vpc_public_subnets=$(jq -r '.vpc_public_subnets.value' <<< "$tf_outputs_json")
+          vpc_public_subnets_string="'$vpc_public_subnets'" 
+
+          echo ::set-output name=agent_ecs_cluster_name::$agent_ecs_cluster_name
+          echo ::set-output name=agent_ecs_task_execution_role_arn::$agent_ecs_task_execution_role_arn
+          echo ::set-output name=agent_ecs_task_role_arn::$agent_ecs_task_role_arn
+          echo ::set-output name=vpc_public_subnets::$vpc_public_subnets_string
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: dev_dataflow_automation_agent
+          IMAGE_TAG: latest
+        run: |
+          cd prefect_agent
+          docker build \
+          --build-arg aws_region_arg=${{ env.aws_region }} \
+          --build-arg agent_cpu_arg=${{ env.agent_cpu }} \
+          --build-arg agent_memory_arg=${{ env.agent_memory }} \
+          --build-arg cluster_name_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_cluster_name }} \
+          --build-arg task_role_arn_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_task_role_arn }} \
+          --build-arg execution_role_arn_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_task_execution_role_arn }} \
+          --build-arg subnets_arg=${{ steps.read_tf_outputs.outputs.vpc_public_subnets }} \
+          --build-arg environment_arg=${{ env.env }} \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
