@@ -58,7 +58,7 @@ flow_module.storage = Docker(
 ecr_authenticate()
 
 # Instantiate the prefect client
-prefect_client = Client(api_token="86l_HUl0rmtUtEXWVE15Ow")
+prefect_client = Client(api_token="<token>")
 
 # Register the Workflow
 prefect_client.register(flow=flow_module, project_name="dev_dataflow_automation")
