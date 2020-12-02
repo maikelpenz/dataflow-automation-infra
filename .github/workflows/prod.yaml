@@ -1,13 +1,13 @@
-name: 'GitHub Actions - Dev Stack'
+name: 'GitHub Actions - Prod Stack'
 
 on:
   push:
     branches:
-      - 'feature/**'
+      - 'master'
 
 env:
     # global
-    env: 'dev'
+    env: 'prod'
     aws_region: 'ap-southeast-2'
     # terraform
     tf_version: 'latest'
