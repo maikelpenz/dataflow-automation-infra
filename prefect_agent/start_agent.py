@@ -1,14 +1,11 @@
 import argparse
-
-# import ast
 import os
 
-from helper import get_prefect_token
+from helpers import get_prefect_token
 
 os.environ["PREFECT__CLOUD__AGENT__AUTH_TOKEN"] = get_prefect_token(secret_name="prefectagenttoken")
 
 from prefect.agent.fargate import FargateAgent
-from prefect.client import Client
 
 
 def get_fargate_agent():

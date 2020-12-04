@@ -28,7 +28,7 @@ ARG environment_arg=None
 ENV environment_env=$environment_arg
 
 COPY start_agent.sh /usr/local/start_agent.sh
-COPY helper.py /usr/local/helper.py
+COPY helpers.py /usr/local/helpers.py
 COPY start_agent.py /usr/local/start_agent.py
 
 ENTRYPOINT /usr/local/start_agent.sh \

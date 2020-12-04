@@ -5,7 +5,6 @@ import subprocess
 
 def ecr_authenticate():
     aws_session = boto3.Session()
-    # aws_session = boto3.Session(profile_name="spiderdev_cli", region_name="us-west-2")
     ecr_client = aws_session.client("ecr")
 
     ecr_credentials = ecr_client.get_authorization_token()["authorizationData"][0]
