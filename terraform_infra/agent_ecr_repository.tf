@@ -1,4 +1,4 @@
-resource "aws_ecr_repository" "dev_dataflow_automation_agent" {
+resource "aws_ecr_repository" "dataflow_automation_agent" {
   name = "${var.env}_dataflow_automation_agent"
 
   image_scanning_configuration {

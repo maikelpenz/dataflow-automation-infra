@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "dataflow_automation_prefect_agent" {
         name : "${var.env}_dataflow_automation_prefect_agent"
         container_name : "${var.env}_dataflow_automation_prefect_agent"
         cpu         = 256
-        image       = "844814218183.dkr.ecr.ap-southeast-2.amazonaws.com/dev_dataflow_automation_agent"
+        image       = "844814218183.dkr.ecr.ap-southeast-2.amazonaws.com/${var.env}_dataflow_automation_agent"
         essential   = true
         mountPoints = []
         volumesFrom = []
@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" "dataflow_automation_prefect_agent" {
           "logDriver" : "awslogs",
           "options" : {
             "awslogs-region" : "ap-southeast-2",
-            "awslogs-group" : "dev_dataflow_automation_agent",
+            "awslogs-group" : "${var.env}_dataflow_automation_agent",
             "awslogs-stream-prefix" : "agent_status",
           },
         },
