@@ -12,8 +12,8 @@ flow_module.environment = FargateTaskEnvironment(
     requiresCompatibilities=["FARGATE"],
     region="ap-southeast-2",
     labels=["dev_dataflow_automation"],
-    taskDefinition="data_loss_check",
-    family="data_loss_check",
+    taskDefinition="dev_data_loss_check",
+    family="dev_data_loss_check",
     cpu="512",
     memory="3072",
     networkMode="awsvpc",
@@ -35,7 +35,7 @@ flow_module.environment = FargateTaskEnvironment(
                 "options": {
                     "awslogs-region": "ap-southeast-2",
                     "awslogs-group": "dev_dataflow_automation_workflows",
-                    "awslogs-stream-prefix": "data_loss_check",
+                    "awslogs-stream-prefix": "dev_data_loss_check",
                 },
             }
         }
@@ -48,7 +48,7 @@ flow_module.environment = FargateTaskEnvironment(
 # Set the flow storage. Where to get the code from
 flow_module.storage = Docker(
     registry_url="844814218183.dkr.ecr.ap-southeast-2.amazonaws.com",
-    image_name="data_loss_check",
+    image_name="dev_data_loss_check",
     image_tag="latest",
     python_dependencies=["boto3"],
     env_vars={"PYTHONPATH": "/opt/prefect/flows"},

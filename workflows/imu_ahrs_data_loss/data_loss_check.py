@@ -19,7 +19,7 @@ def load(data):
     print("Here's your data: {}".format(data))
 
 
-with Flow("data_loss_check") as flow:
+with Flow("dev_data_loss_check") as flow:
     e = extract()
     t = transform(e)
     l = load(t)
