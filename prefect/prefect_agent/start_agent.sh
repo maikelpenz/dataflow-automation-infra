@@ -12,6 +12,7 @@ task_role_arn=$5
 execution_role_arn=$6
 subnets=$7
 environment=$8
+prefect_token_secret_name=$9
 
 python3 /usr/local/start_agent.py \
  --cluster_name=$cluster_name \
@@ -21,4 +22,5 @@ python3 /usr/local/start_agent.py \
  --task_role_arn=$task_role_arn \
  --execution_role_arn=$execution_role_arn \
  --subnets=$subnets \
- --environment=$environment
+ --environment=$environment \
+ --prefect_token_secret_name=$prefect_token_secret_name

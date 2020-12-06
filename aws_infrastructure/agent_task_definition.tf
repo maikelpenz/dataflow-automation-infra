@@ -1,3 +1,5 @@
+data "aws_caller_identity" "target_account" {}
+
 resource "aws_ecs_task_definition" "dataflow_automation_prefect_agent" {
   family                   = "${var.env}_dataflow_automation_prefect_agent"
   network_mode             = "awsvpc"
@@ -13,7 +15,7 @@ resource "aws_ecs_task_definition" "dataflow_automation_prefect_agent" {
         name : "${var.env}_dataflow_automation_prefect_agent"
         container_name : "${var.env}_dataflow_automation_prefect_agent"
         cpu         = 256
-        image       = "844814218183.dkr.ecr.ap-southeast-2.amazonaws.com/${var.env}_dataflow_automation_agent"
+        image       = "${data.aws_caller_identity.target_account.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.env}_dataflow_automation_agent"
         essential   = true
         mountPoints = []
         volumesFrom = []
@@ -21,7 +23,7 @@ resource "aws_ecs_task_definition" "dataflow_automation_prefect_agent" {
         logConfiguration : {
           "logDriver" : "awslogs",
           "options" : {
-            "awslogs-region" : "ap-southeast-2",
+            "awslogs-region" : var.aws_region,
             "awslogs-group" : "${var.env}_dataflow_automation_agent",
             "awslogs-stream-prefix" : "agent_status",
           },

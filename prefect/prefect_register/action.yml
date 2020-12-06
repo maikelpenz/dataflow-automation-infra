@@ -1,0 +1,31 @@
+# action.yml
+name: 'Register Workflow with Prefect Cloud'
+inputs:
+  env:
+    description: 'Environment to deploy Workflow'
+    required: true
+  git_url:
+    description: 'Url of workflow Git repository'
+    required: true
+  branch_name:
+    description: 'Branch name where workflow must be found'
+    required: true
+  commit_sha:
+    description: 'Commit SHA'
+    required: true
+  workflow_path:
+    description: 'Path to the workflow in the repository'
+    required: true
+  prefect_register_token_secret_name:
+    description: 'AWS Secrets manager name where prefect register token is stored'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.env }}
+    - ${{ inputs.git_url }}
+    - ${{ inputs.branch_name }}
+    - ${{ inputs.commit_sha }}
+    - ${{ inputs.workflow_path }}
+    - ${{ inputs.prefect_register_token_secret_name }}

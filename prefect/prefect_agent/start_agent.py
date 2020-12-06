@@ -1,14 +1,17 @@
 import argparse
 import os
 
-from helpers import get_prefect_token
-
-os.environ["PREFECT__CLOUD__AGENT__AUTH_TOKEN"] = get_prefect_token(secret_name="prefectagenttoken")
-
+from prefect_helpers import get_prefect_token
 from prefect.agent.fargate import FargateAgent
 
 
-def get_fargate_agent():
+def get_fargate_agent_definition():
+    """
+    Get the Prefect Agent definition for an environment that run workflows on AWS ECS Fargate
+
+    Returns:
+        [FargateAgent] -- Fargate Agent object from prefect.agent.fargate
+    """
     subnets_list = subnets.split("|")
 
     return FargateAgent(
@@ -51,6 +54,7 @@ if __name__ == "__main__":
     parser.add_argument("--execution_role_arn", type=str, required=False, default=False)
     parser.add_argument("--subnets", type=str, required=False, default=False)
     parser.add_argument("--environment", type=str, required=False, default=False)
+    parser.add_argument("--prefect_token_secret_name", type=str, required=False, default=False)
 
     args, unknown = parser.parse_known_args()
     cluster_name = args.cluster_name
@@ -61,6 +65,13 @@ if __name__ == "__main__":
     execution_role_arn = args.execution_role_arn
     subnets = args.subnets
     environment = args.environment
+    prefect_token_secret_name = args.prefect_token_secret_name
 
-    agent = get_fargate_agent()
+    os.environ["PREFECT__CLOUD__AGENT__AUTH_TOKEN"] = get_prefect_token(
+        secret_name=prefect_token_secret_name
+    )
+
+    # get the prefect agent definition and instantiate the agent object
+    agent = get_fargate_agent_definition()
+    # start the prefect agent for fargate
     agent.start()

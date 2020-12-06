@@ -10,16 +10,17 @@ env:
     env: 'dev'
     aws_region: 'ap-southeast-2'
     # terraform
-    tf_working_dir: './terraform_infra'
+    tf_working_dir: './aws_infrastructure'
     tf_version: 'latest'
     tf_artifacts_bucket: 'dataflow-automation-infra-artifacts'
     tf_state_bucket: 'dataflow-automation-infra-tf-state'
     # prefect agent
-    prefect_agent_working_dir: './prefect_agent'
+    prefect_agent_working_dir: './prefect/prefect_agent'
     agent_cpu: 512
     agent_memory: 1024
+    prefect_token_secret_name: 'prefectagenttoken'
     # prefect project
-    prefect_project_working_dir: './prefect_project'
+    prefect_project_working_dir: './prefect/prefect_project'
 
 
 jobs:
@@ -128,7 +129,7 @@ jobs:
         run: |
           cd ${{ env.prefect_agent_working_dir }}
 
-          cp ../shared/helpers.py .
+          cp ../prefect_helpers.py .
           
           docker build \
           --build-arg aws_region_arg=${{ env.aws_region }} \
@@ -139,6 +140,7 @@ jobs:
           --build-arg execution_role_arn_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_task_execution_role_arn }} \
           --build-arg subnets_arg=${{ steps.read_tf_outputs.outputs.vpc_public_subnets }} \
           --build-arg environment_arg=${{ env.env }} \
+          --build-arg prefect_token_secret_name_arg=${{ env.prefect_token_secret_name }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
@@ -159,11 +161,12 @@ jobs:
       - name: Create Prefect Project
         run: |
           cd ${{ env.prefect_project_working_dir }}
-          cp ../shared/helpers.py .
+          cp ../prefect_helpers.py .
 
           pip3 install --user setuptools
           pip3 install --user prefect
           pip3 install --user boto3
 
-          python3 create_prefect_project.py \
-            --environment=${{ env.env }}
+          python3 prefect_project_setup.py \
+            --environment=${{ env.env }} \
+            --prefect_token_secret_name=${{ env.prefect_token_secret_name }}
