@@ -1,8 +1,27 @@
 import argparse
 import os
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 from prefect_helpers import get_prefect_token
-from prefect.agent.fargate import FargateAgent
+
+
+def get_agent_definition(agent_type: str):
+    """
+    Get the prefect agent definition
+
+    Parameters:
+        agent_type [str] -- type of agent. E.g: Fargate
+
+    Return:
+        [object] -- prefect agent object
+    """
+    if agent_type == "Fargate":
+        return get_fargate_agent_definition()
+    else:
+        raise ValueError(f"'{agent_type}' is not a valid agent type")
 
 
 def get_fargate_agent_definition():
@@ -12,6 +31,10 @@ def get_fargate_agent_definition():
     Returns:
         [FargateAgent] -- Fargate Agent object from prefect.agent.fargate
     """
+    # imported here as the environment variable PREFECT__CLOUD__AGENT__AUTH_TOKEN
+    # must already be in place
+    from prefect.agent.fargate import FargateAgent
+
     subnets_list = subnets.split("|")
 
     return FargateAgent(
@@ -44,8 +67,30 @@ def get_fargate_agent_definition():
     )
 
 
+def start_agent(agent: object):
+    """
+    Starts the prefect agent
+
+    Parameters:
+        agent [object] -- prefect agent object to start
+    """
+    # imported here as the environment variable PREFECT__CLOUD__AGENT__AUTH_TOKEN
+    # must already be in place
+    from prefect.utilities.exceptions import AuthorizationError
+
+    try:
+        agent.start()
+    except AuthorizationError as error:
+        logger.error(
+            "Invalid API token provided. Check that the secret "
+            f"'{prefect_token_secret_name}' is set on AWS"
+        )
+        raise error
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--agent_type", type=str, required=False, default=False)
     parser.add_argument("--cluster_name", type=str, required=False, default=False)
     parser.add_argument("--aws_region", type=str, required=False, default=False)
     parser.add_argument("--agent_cpu", type=str, required=False, default=False)
@@ -57,6 +102,7 @@ if __name__ == "__main__":
     parser.add_argument("--prefect_token_secret_name", type=str, required=False, default=False)
 
     args, unknown = parser.parse_known_args()
+    agent_type = args.agent_type
     cluster_name = args.cluster_name
     aws_region = args.aws_region
     agent_cpu = args.agent_cpu
@@ -67,11 +113,12 @@ if __name__ == "__main__":
     environment = args.environment
     prefect_token_secret_name = args.prefect_token_secret_name
 
+    # Set authentication to Prefect Cloud
     os.environ["PREFECT__CLOUD__AGENT__AUTH_TOKEN"] = get_prefect_token(
         secret_name=prefect_token_secret_name
     )
 
-    # get the prefect agent definition and instantiate the agent object
-    agent = get_fargate_agent_definition()
-    # start the prefect agent for fargate
-    agent.start()
+    # Get the agent definition
+    agent = get_agent_definition(agent_type)
+    # Start the agent
+    start_agent(agent)

@@ -132,6 +132,7 @@ jobs:
           cp ../prefect_helpers.py .
           
           docker build \
+          --build-arg agent_type_arg=Fargate \
           --build-arg aws_region_arg=${{ env.aws_region }} \
           --build-arg agent_cpu_arg=${{ env.agent_cpu }} \
           --build-arg agent_memory_arg=${{ env.agent_memory }} \
