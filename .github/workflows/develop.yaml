@@ -58,13 +58,13 @@ jobs:
         id: plan
         run: |
           cd ${{ env.tf_working_dir }}
-          terraform plan -var-file="configuration/${{ env.env }}.tfvars" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
+          terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
 
       - name: Terraform Apply
         id: apply
         run: |
           cd ${{ env.tf_working_dir }}
-          terraform apply -auto-approve -var-file="configuration/${{ env.env }}.tfvars" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
+          terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
 
       - name: Terraform Outputs
         run: |
