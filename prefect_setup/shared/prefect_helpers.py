@@ -7,7 +7,7 @@ from botocore.exceptions import ClientError
 SECRETS_MANAGER_CLIENT = boto3.client(service_name="secretsmanager")
 
 
-def get_prefect_token(secret_name: str):
+def get_prefect_token(secret_name: str) -> dict:
     """
     Get the prefect token from AWS Secrets manager
 
@@ -25,7 +25,9 @@ def get_prefect_token(secret_name: str):
     else:
         if "SecretString" in get_secret_value_response:
             secret = get_secret_value_response["SecretString"]
-        else:
+        elif "SecretBinary" in get_secret_value_response:
             secret = base64.b64decode(get_secret_value_response["SecretBinary"])
+        else:
+            raise Exception("Invalid secret value")
 
     return json.loads(secret).get(secret_name)

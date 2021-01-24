@@ -15,12 +15,12 @@ env:
     tf_artifacts_bucket: 'dataflow-automation-infra-artifacts'
     tf_state_bucket: 'dataflow-automation-infra-tf-state'
     # prefect agent
-    prefect_agent_working_dir: './prefect/prefect_agent'
+    prefect_agent_working_dir: './prefect_setup/prefect_agent'
     agent_cpu: 512
     agent_memory: 1024
     prefect_token_secret_name: 'prefectagenttoken'
     # prefect project
-    prefect_project_working_dir: './prefect/prefect_project'
+    prefect_project_working_dir: './prefect_setup/prefect_project'
 
 
 jobs:
@@ -129,7 +129,7 @@ jobs:
         run: |
           cd ${{ env.prefect_agent_working_dir }}
 
-          cp ../prefect_helpers.py .
+          cp ../shared/prefect_helpers.py .
           
           docker build \
           --build-arg agent_type_arg=Fargate \

@@ -15,7 +15,7 @@ This action register a workflow to prefect cloud
 
 
 ## Example usage
-uses: maikelpenz/dataflow-automation-infra/prefect/prefect_register@v1
+uses: maikelpenz/dataflow-automation-infra/prefect_setup/prefect_register@v1
 with:
   env: dev
   git_url: 'https://github.com/maikelpenz/dataflow-sample-workflow.git'

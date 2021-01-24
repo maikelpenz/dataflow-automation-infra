@@ -4,8 +4,10 @@ FROM prefecthq/prefect
 RUN pip3 install boto3
 
 # Copy required agent startup files
-COPY prefect_helpers.py /usr/local/prefect_helpers.py
-COPY start_agent.py /usr/local/start_agent.py
+COPY prefect_helpers.py /prefect_setup/shared/prefect_helpers.py
+COPY start_agent.py /prefect_setup/start_agent.py
+RUN touch /prefect_setup/__init__.py
+RUN touch /prefect_setup/shared/__init__.py
 
 # Agent Configuration variables
 ARG agent_type_arg=None
@@ -42,7 +44,7 @@ ARG prefect_token_secret_name_arg=None
 ENV prefect_token_secret_name_env=$prefect_token_secret_name_arg
 
 # Set to start the agent when image comes up 
-ENTRYPOINT python3 /usr/local/start_agent.py \
+ENTRYPOINT python3 /prefect_setup/start_agent.py \
     --agent_type=$agent_type_env \
     --cluster_name=$cluster_name_env \
     --aws_region=$aws_region_env \
