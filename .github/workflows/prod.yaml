@@ -24,11 +24,11 @@ env:
 
 
 jobs:
-  terraform-infrastructure:
-    name: Deploy Terraform Infrastructure
+  aws-infrastructure:
+    name: Deploy AWS Infrastructure
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@master
 
       - name: Configure AWS Credentials
@@ -79,12 +79,12 @@ jobs:
           path: /tmp/tf_outputs.json
           retention-days: 5
 
-  prefect-agent-container:
-    needs: terraform-infrastructure
+  prefect-agent-setup:
+    needs: aws-infrastructure
     name: Prefect Agent Setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@master
 
       - name: Download Terraform Outputs Artifact
@@ -117,11 +117,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.aws_region }}
 
-      - name: Login to Amazon ECR
+      - name: Amazon ECR - Login
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Amazon ECR - Build/Push image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.env }}_dataflow_automation_agent
@@ -143,13 +143,14 @@ jobs:
           --build-arg environment_arg=${{ env.env }} \
           --build-arg prefect_token_secret_name_arg=${{ env.prefect_token_secret_name }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-  prefect-project:
+  prefect-project-setup:
     name: Prefect Project Setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@master
 
       - name: Configure AWS Credentials
@@ -159,7 +160,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.aws_region }}
 
-      - name: Create Prefect Project
+      - name: Setup Prefect Project
         run: |
           cd ${{ env.prefect_project_working_dir }}
           cp ../prefect_helpers.py .
