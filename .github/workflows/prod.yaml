@@ -162,8 +162,8 @@ jobs:
 
       - name: Setup Prefect Project
         run: |
-          cd ${{ env.prefect_project_working_dir }}
-          cp ../prefect_helpers.py .
+          cp ${{ env.prefect_project_working_dir }}/prefect_project_setup.py prefect_setup/
+          touch prefect_setup/__init__.py
 
           pip3 install --user setuptools
           pip3 install --user prefect
