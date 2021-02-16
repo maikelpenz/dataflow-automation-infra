@@ -27,7 +27,6 @@ COPY entrypoint.sh /entrypoint.sh
 COPY workflow_register.py /tmp/workflow_register.py
 COPY aws_conn_helpers.py /tmp/aws_conn_helpers.py
 COPY prefect_helpers.py /tmp/prefect_helpers.py
-COPY action_helpers.py /tmp/action_helpers.py
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`).
 ENTRYPOINT ["/entrypoint.sh"]
