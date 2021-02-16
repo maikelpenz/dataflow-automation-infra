@@ -1,13 +1,17 @@
 import logging
+import os
+import sys
 from typing import Tuple
+
+sys.path.append(os.path.realpath(os.path.dirname(__file__)))
 
 from botocore.exceptions import ClientError
 from prefect import Client
 from prefect.environments import FargateTaskEnvironment
 from prefect.environments.storage import Docker
 
-from .prefect_helpers import PrefectHelpers
-from .aws_conn_helpers import AwsConnHelpers
+from prefect_helpers import PrefectHelpers
+from aws_conn_helpers import AwsConnHelpers
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

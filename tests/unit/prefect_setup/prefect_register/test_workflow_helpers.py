@@ -12,7 +12,7 @@ def test_create_workflow_ecr_repository_already_exists(mocker, capsys):
     Test that it won't create the ecr repository because it already exists
     """
     mocker.patch(
-        "prefect_setup.prefect_register.aws_conn_helpers.AwsConnHelpers.describe_ecr_repositories",
+        "aws_conn_helpers.AwsConnHelpers.describe_ecr_repositories",
         return_value=True,
     )
     workflow_helpers.create_workflow_ecr_repository(FLOW_NAME)
@@ -25,11 +25,11 @@ def test_create_workflow_ecr_repository_success(mocker, capsys):
     Test that it can create the ecr repository
     """
     mocker.patch(
-        "prefect_setup.prefect_register.aws_conn_helpers.AwsConnHelpers.describe_ecr_repositories",
+        "aws_conn_helpers.AwsConnHelpers.describe_ecr_repositories",
         side_effect=ClientError({"Error": {"Code": ""}}, ""),
     )
     mocker.patch(
-        "prefect_setup.prefect_register.aws_conn_helpers.AwsConnHelpers.create_ecr_repository",
+        "aws_conn_helpers.AwsConnHelpers.create_ecr_repository",
         return_value=True,
     )
     workflow_helpers.create_workflow_ecr_repository(FLOW_NAME)
@@ -42,11 +42,11 @@ def test_create_workflow_ecr_repository_fail(mocker):
     Test that it cannot the ecr repository and a ClientError is thrown
     """
     mocker.patch(
-        "prefect_setup.prefect_register.aws_conn_helpers.AwsConnHelpers.describe_ecr_repositories",
+        "aws_conn_helpers.AwsConnHelpers.describe_ecr_repositories",
         side_effect=ClientError({"Error": {"Code": ""}}, ""),
     )
     mocker.patch(
-        "prefect_setup.prefect_register.aws_conn_helpers.AwsConnHelpers.create_ecr_repository",
+        "aws_conn_helpers.AwsConnHelpers.create_ecr_repository",
         side_effect=ClientError({"Error": {"Code": ""}}, ""),
     )
     with pytest.raises(ClientError):
@@ -59,8 +59,7 @@ def test_set_workflow_properties(mocker):
     """
     environment = "test"
     mocker.patch(
-        "prefect_setup.prefect_register.prefect_helpers.PrefectHelpers"
-        ".get_prefect_aws_infrastructure",
+        "prefect_helpers.PrefectHelpers.get_prefect_aws_infrastructure",
         return_value=(1, 2, 4, 5, 6),
     )
     mocker.patch("prefect_setup.prefect_register.workflow_helpers.WorkflowHelpers.import_flow")
@@ -80,7 +79,7 @@ def test_register_workflow(mocker):
         return_value=(None, None),
     )
     mocker.patch(
-        "prefect_setup.prefect_register.aws_conn_helpers.AwsConnHelpers.ecr_authenticate",
+        "aws_conn_helpers.AwsConnHelpers.ecr_authenticate",
         return_value=None,
     )
     mocker.patch(
@@ -88,7 +87,7 @@ def test_register_workflow(mocker):
         return_value=None,
     )
     mocker.patch(
-        "prefect_setup.prefect_register.prefect_helpers.PrefectHelpers.get_prefect_token",
+        "prefect_helpers.PrefectHelpers.get_prefect_token",
         return_value="PrefectToken",
     )
     with pytest.raises(Exception, match="'NoneType' object has no attribute 'flow'"):

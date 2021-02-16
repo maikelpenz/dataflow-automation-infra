@@ -1,8 +1,12 @@
 import base64
 import json
+import os
+import sys
 from typing import Tuple
 
-from .aws_conn_helpers import AwsConnHelpers
+sys.path.append(os.path.realpath(os.path.dirname(__file__)))
+
+from aws_conn_helpers import AwsConnHelpers
 
 from botocore.exceptions import ClientError
 
