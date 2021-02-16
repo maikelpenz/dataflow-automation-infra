@@ -20,6 +20,7 @@ git checkout $commit_sha -- $workflow_path
 # move to /tmp/
 mv $workflow_path /tmp/$workflow_path
 # move flow register into the flow folder
+mv /tmp/workflow_helpers.py /tmp/$workflow_path/workflow_helpers.py
 mv /tmp/workflow_register.py /tmp/$workflow_path/workflow_register.py
 mv /tmp/aws_conn_helpers.py /tmp/$workflow_path/aws_conn_helpers.py
 mv /tmp/prefect_helpers.py /tmp/$workflow_path/prefect_helpers.py

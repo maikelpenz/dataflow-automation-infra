@@ -24,6 +24,7 @@ RUN apk add gcc python3-dev build-base musl-dev libc-dev openssl-dev linux-heade
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh
+COPY workflow_helpers.py /tmp/workflow_helpers.py
 COPY workflow_register.py /tmp/workflow_register.py
 COPY aws_conn_helpers.py /tmp/aws_conn_helpers.py
 COPY prefect_helpers.py /tmp/prefect_helpers.py
