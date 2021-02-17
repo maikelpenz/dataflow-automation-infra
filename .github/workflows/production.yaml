@@ -1,0 +1,175 @@
+name: 'GitHub Actions - Production'
+
+on:
+  push:
+    branches:
+      - 'master'
+
+env:
+    # global
+    env: 'prod'
+    aws_region: 'ap-southeast-2'
+    # terraform
+    tf_working_dir: './aws_infrastructure'
+    tf_version: 'latest'
+    tf_artifacts_bucket: 'dataflow-automation-infra-artifacts'
+    tf_state_bucket: 'dataflow-automation-infra-tf-state'
+    # prefect agent
+    prefect_agent_working_dir: './prefect_setup/prefect_agent'
+    agent_cpu: 512
+    agent_memory: 1024
+    prefect_token_secret_name: 'prefectagenttoken'
+    prefect_agent_up: 'true'
+    # prefect project
+    prefect_project_working_dir: './prefect_setup/prefect_project'
+
+
+jobs:
+  aws-infrastructure:
+    name: Deploy AWS Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.tf_version }}
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        id: init
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform init -backend-config="bucket=${{ env.tf_state_bucket }}" -backend-config="key=${{ env.env }}/terraform.tfstate"
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
+
+      - name: Terraform Apply
+        id: apply
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
+
+      - name: Terraform Outputs
+        run: |
+          cd ${{ env.tf_working_dir }}
+          output=$(terraform output --json)
+          echo $output >> /tmp/tf_outputs.json
+
+      - name: Upload Terraform Outputs Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tf_outputs
+          path: /tmp/tf_outputs.json
+          retention-days: 5
+
+  prefect-agent-setup:
+    needs: aws-infrastructure
+    name: Prefect Agent Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Download Terraform Outputs Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: tf_outputs
+          path: /tmp/
+
+      - name: Read Terraform Outputs
+        id: read_tf_outputs
+        run: |
+          sudo apt-get install jq -y
+          tf_outputs_json=$(less /tmp/tf_outputs.json)
+          
+          agent_ecs_cluster_name=$(jq -r '.agent_ecs_cluster_name.value' <<< "$tf_outputs_json")
+          agent_ecs_task_execution_role_arn=$(jq -r '.agent_ecs_task_execution_role_arn.value' <<< "$tf_outputs_json")
+          agent_ecs_task_role_arn=$(jq -r '.agent_ecs_task_role_arn.value' <<< "$tf_outputs_json")
+          vpc_public_subnets=$(jq -r '.vpc_public_subnets.value' <<< "$tf_outputs_json")
+          vpc_public_subnets_string="'$vpc_public_subnets'" 
+
+          echo ::set-output name=agent_ecs_cluster_name::$agent_ecs_cluster_name
+          echo ::set-output name=agent_ecs_task_execution_role_arn::$agent_ecs_task_execution_role_arn
+          echo ::set-output name=agent_ecs_task_role_arn::$agent_ecs_task_role_arn
+          echo ::set-output name=vpc_public_subnets::$vpc_public_subnets_string
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
+
+      - name: Amazon ECR - Login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Amazon ECR - Build/Push image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.env }}_dataflow_automation_agent
+          IMAGE_TAG: latest
+        run: |
+          cd ${{ env.prefect_agent_working_dir }}
+
+          cp ../shared/prefect_helpers.py .
+          
+          docker build \
+          --build-arg agent_type_arg=Fargate \
+          --build-arg aws_region_arg=${{ env.aws_region }} \
+          --build-arg agent_cpu_arg=${{ env.agent_cpu }} \
+          --build-arg agent_memory_arg=${{ env.agent_memory }} \
+          --build-arg cluster_name_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_cluster_name }} \
+          --build-arg task_role_arn_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_task_role_arn }} \
+          --build-arg execution_role_arn_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_task_execution_role_arn }} \
+          --build-arg subnets_arg=${{ steps.read_tf_outputs.outputs.vpc_public_subnets }} \
+          --build-arg environment_arg=${{ env.env }} \
+          --build-arg prefect_token_secret_name_arg=${{ env.prefect_token_secret_name }} \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  prefect-project-setup:
+    name: Prefect Project Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
+
+      - name: Setup Prefect Project
+        run: |
+          cp ${{ env.prefect_project_working_dir }}/prefect_project_setup.py prefect_setup/
+          touch prefect_setup/__init__.py
+
+          pip3 install --user setuptools
+          pip3 install --user prefect
+          pip3 install --user boto3
+
+          python3 prefect_setup/prefect_project_setup.py \
+            --environment=${{ env.env }} \
+            --prefect_token_secret_name=${{ env.prefect_token_secret_name }}

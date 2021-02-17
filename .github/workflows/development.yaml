@@ -1,13 +1,13 @@
-name: 'GitHub Actions - Prod Stack'
+name: 'GitHub Actions - Development'
 
 on:
   push:
     branches:
-      - 'master'
+      - 'feature/**'
 
 env:
     # global
-    env: 'prod'
+    env: 'dev'
     aws_region: 'ap-southeast-2'
     # terraform
     tf_working_dir: './aws_infrastructure'
@@ -19,8 +19,11 @@ env:
     agent_cpu: 512
     agent_memory: 1024
     prefect_token_secret_name: 'prefectagenttoken'
+    prefect_agent_up: 'true'
     # prefect project
     prefect_project_working_dir: './prefect_setup/prefect_project'
+    # unit tests location
+    unit_tests_dir: './tests/unit'
 
 
 jobs:
@@ -58,13 +61,13 @@ jobs:
         id: plan
         run: |
           cd ${{ env.tf_working_dir }}
-          terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
+          terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
 
       - name: Terraform Apply
         id: apply
         run: |
           cd ${{ env.tf_working_dir }}
-          terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}"
+          terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
 
       - name: Terraform Outputs
         run: |
@@ -79,8 +82,31 @@ jobs:
           path: /tmp/tf_outputs.json
           retention-days: 5
 
-  prefect-agent-setup:
+  unit-tests:
     needs: aws-infrastructure
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+
+      - name: Run Unit Tests
+        env:
+          AWS_DEFAULT_REGION: ${{ env.aws_region }}
+        run: |
+          pipenv install --dev
+          pipenv run pytest ${{ env.unit_tests_dir }}
+  
+  prefect-agent-setup:
+    needs: unit-tests
     name: Prefect Agent Setup
     runs-on: ubuntu-latest
     steps:
@@ -143,10 +169,11 @@ jobs:
           --build-arg environment_arg=${{ env.env }} \
           --build-arg prefect_token_secret_name_arg=${{ env.prefect_token_secret_name }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-
+          
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   prefect-project-setup:
+    needs: unit-tests
     name: Prefect Project Setup
     runs-on: ubuntu-latest
     steps:

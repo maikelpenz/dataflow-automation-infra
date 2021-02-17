@@ -1,6 +1,6 @@
 resource "aws_ecs_service" "dataflow_automation_prefect_agent" {
   cluster             = aws_ecs_cluster.dataflow_automation_prefect_agent.id
-  desired_count       = 1
+  desired_count       = var.prefect_agent_up == "false" ? 0 : 1
   launch_type         = "FARGATE"
   name                = "${var.env}_dataflow_automation_prefect_agent"
   scheduling_strategy = "REPLICA"
