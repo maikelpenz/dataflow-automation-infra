@@ -201,7 +201,7 @@ jobs:
             --prefect_token_secret_name=${{ env.prefect_token_secret_name }}
 
   functional-tests:
-    needs: prefect-project-setup
+    needs: [prefect-project-setup, prefect-agent-setup]
     name: Run Functional Tests
     runs-on: ubuntu-latest
     steps:
