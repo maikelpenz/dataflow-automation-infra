@@ -10,6 +10,17 @@ prefect_register_token_secret_name=$6
 git_url_basename=$(basename $git_url)
 repository_name=${git_url_basename%.*}
 
+echo "branch name"
+echo $branch_name
+echo "git_url"
+echo $git_url
+echo "repository_name"
+echo $repository_name
+echo "commit_sha"
+echo $commit_sha
+echo "workflow_path"
+echo $workflow_path
+
 # clone workflow into container
 git clone --branch $branch_name \
          --no-checkout $git_url
