@@ -130,7 +130,8 @@ jobs:
         with:
           env: dev
           git_url: 'https://github.com/maikelpenz/dataflow-automation-infra.git'
-          branch_name: master
+          #branch_name: master
+          branch_name: ${{ steps.action_vars.outputs.branch_name }}
           commit_sha: ${{ steps.action_vars.outputs.commit_sha }}
           workflow_path: 'tests/functional/prefect_register/workflow_functional'
           prefect_register_token_secret_name: 'prefectregistertoken'
