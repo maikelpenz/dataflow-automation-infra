@@ -25,9 +25,30 @@ env:
     # unit tests location
     unit_tests_dir: './tests/unit'
     function_tests_dir: './tests/functional'
+    # github action
+    gh_action_repository_tag: 'github_action_test'
 
 
 jobs:
+  tag-github-action:
+    name: Tag Github Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
+      - name: Create/Update Github Action Tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          if [[ $(git ls-remote --tags | grep "${{ env.gh_action_repository_tag }}") ]]; then
+              git push --delete origin ${{ env.gh_action_repository_tag }}
+          fi
+
+          git tag -a -m "Create/Update Github Action Tag" ${{ env.gh_action_repository_tag }}
+          git push --follow-tags
+
   aws-infrastructure:
     name: Deploy AWS Infrastructure
     runs-on: ubuntu-latest
