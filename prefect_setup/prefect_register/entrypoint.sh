@@ -40,13 +40,13 @@ mv /tmp/aws_conn_helpers.py /tmp/$workflow_path/aws_conn_helpers.py
 mv /tmp/prefect_helpers.py /tmp/$workflow_path/prefect_helpers.py
 
 # install prefect
-pip3 install prefect
-# install boto3
-pip3 install boto3
+# pip3 install prefect
+# # install boto3
+# pip3 install boto3
 
-#cd /tmp/$workflow_path
+# #cd /tmp/$workflow_path
 
-# register workflow
-python3 /tmp/$workflow_path/workflow_register.py \
- --env=$env \
- --prefect_register_token_secret_name=$prefect_register_token_secret_name
+# # register workflow
+# python3 /tmp/$workflow_path/workflow_register.py \
+#  --env=$env \
+#  --prefect_register_token_secret_name=$prefect_register_token_secret_name

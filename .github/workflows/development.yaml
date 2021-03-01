@@ -127,6 +127,7 @@ jobs:
   #         pipenv run pytest ${{ env.unit_tests_dir }}
   
   unit-tests-temp:
+    needs: tag-github-action
     runs-on: ubuntu-latest
     name: Register Workflow
     steps:
