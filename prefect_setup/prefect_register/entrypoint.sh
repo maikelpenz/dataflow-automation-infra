@@ -34,7 +34,7 @@ pip3 install prefect
 pip3 install boto3
 
 echo "ls maikel"
-ls $workflow_path
+ls /tmp/$workflow_path
 
 # register workflow
 python3 /tmp/$workflow_path/workflow_register.py \
