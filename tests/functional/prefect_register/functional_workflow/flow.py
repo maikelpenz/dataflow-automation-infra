@@ -19,7 +19,7 @@ def load(data):
     print("Here's your data: {}".format(data))
 
 
-with Flow("sample_workflow") as flow:
+with Flow("functional_workflow") as flow:
     e = extract()
     t = transform(e)
     l = load(t)
