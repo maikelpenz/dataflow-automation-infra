@@ -24,7 +24,7 @@ env:
     prefect_project_working_dir: './prefect_setup/prefect_project'
     # unit tests location
     unit_tests_dir: './tests/unit'
-    function_tests_dir: './tests/functional/prefect_agent'
+    function_tests_dir: './tests/functional'
     # github action
     gh_action_repository_tag: 'github_action_test'
 
@@ -250,7 +250,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.aws_region }}
         run: |
           pipenv install --dev
-          pipenv run pytest ${{ env.function_tests_dir }}
+          pipenv run pytest ${{ env.function_tests_dir }}/prefect_agent
 
   functional-test-workflow-register:
     name: Functional Test - Workflow Register
