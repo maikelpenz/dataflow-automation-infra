@@ -10,47 +10,24 @@ prefect_register_token_secret_name=$6
 git_url_basename=$(basename $git_url)
 repository_name=${git_url_basename%.*}
 
-echo "branch name"
-echo $branch_name
-echo "git_url"
-echo $git_url
-echo "repository_name"
-echo $repository_name
-echo "commit_sha"
-echo $commit_sha
-echo "workflow_path"
-echo $workflow_path
-echo "pwd"
-pwd
-echo "post pwd"
-
-# clone workflow into container
-git clone --branch $branch_name \
+if [ $repository_name != "dataflow-automation-infra" ]; then
+   # clone workflow into container
+    git clone --branch $branch_name \
          --no-checkout $git_url
 
-echo "ls0"
-ls
-cd $repository_name
-echo "ls1"
-ls
-echo "pwd1"
-pwd
-git checkout $commit_sha -- $workflow_path
-echo "ls2"
-ls
-echo "pwd2"
-pwd
-echo "ls workflowpath"
-ls $workflow_path
+    cd $repository_name
+    git checkout $commit_sha -- $workflow_path
+fi
+
 # move to /tmp/
 mv $workflow_path /tmp/$workflow_path
 # move flow register into the flow folder
-mv /tmp/workflow_helpers.py /tmp/$workflow_path/workflow_helpers.py
-mv /tmp/workflow_register.py /tmp/$workflow_path/workflow_register.py
-mv /tmp/aws_conn_helpers.py /tmp/$workflow_path/aws_conn_helpers.py
-mv /tmp/prefect_helpers.py /tmp/$workflow_path/prefect_helpers.py
+# mv /tmp/workflow_helpers.py /tmp/$workflow_path/workflow_helpers.py
+# mv /tmp/workflow_register.py /tmp/$workflow_path/workflow_register.py
+# mv /tmp/aws_conn_helpers.py /tmp/$workflow_path/aws_conn_helpers.py
+# mv /tmp/prefect_helpers.py /tmp/$workflow_path/prefect_helpers.py
 
-# install prefect
+# # install prefect
 # pip3 install prefect
 # # install boto3
 # pip3 install boto3
