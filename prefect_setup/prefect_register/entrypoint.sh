@@ -26,6 +26,9 @@ git clone --branch $branch_name \
          --no-checkout $git_url
 
 cd $repository_name
+echo "ls and pwd"
+ls
+pwd
 git checkout $commit_sha -- $workflow_path
 
 # move to /tmp/

@@ -48,83 +48,83 @@ jobs:
           git tag -a -m "Create/Update Github Action Tag" ${{ env.gh_action_repository_tag }}
           git push --follow-tags
   
-  aws-infrastructure:
-    name: Deploy AWS Infrastructure
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@master
+  # aws-infrastructure:
+  #   name: Deploy AWS Infrastructure
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@master
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.aws_region }}
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ${{ env.aws_region }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: ${{ env.tf_version }}
-          terraform_wrapper: false
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v1
+  #       with:
+  #         terraform_version: ${{ env.tf_version }}
+  #         terraform_wrapper: false
 
-      - name: Terraform Init
-        id: init
-        run: |
-          cd ${{ env.tf_working_dir }}
-          terraform init -backend-config="bucket=${{ env.tf_state_bucket }}" -backend-config="key=${{ env.env }}/terraform.tfstate"
+  #     - name: Terraform Init
+  #       id: init
+  #       run: |
+  #         cd ${{ env.tf_working_dir }}
+  #         terraform init -backend-config="bucket=${{ env.tf_state_bucket }}" -backend-config="key=${{ env.env }}/terraform.tfstate"
 
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate
+  #     - name: Terraform Validate
+  #       id: validate
+  #       run: terraform validate
 
-      - name: Terraform Plan
-        id: plan
-        run: |
-          cd ${{ env.tf_working_dir }}
-          terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
+  #     - name: Terraform Plan
+  #       id: plan
+  #       run: |
+  #         cd ${{ env.tf_working_dir }}
+  #         terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
 
-      - name: Terraform Apply
-        id: apply
-        run: |
-          cd ${{ env.tf_working_dir }}
-          terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
+  #     - name: Terraform Apply
+  #       id: apply
+  #       run: |
+  #         cd ${{ env.tf_working_dir }}
+  #         terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
 
-      - name: Terraform Outputs
-        run: |
-          cd ${{ env.tf_working_dir }}
-          output=$(terraform output --json)
-          echo $output >> /tmp/tf_outputs.json
+  #     - name: Terraform Outputs
+  #       run: |
+  #         cd ${{ env.tf_working_dir }}
+  #         output=$(terraform output --json)
+  #         echo $output >> /tmp/tf_outputs.json
 
-      - name: Upload Terraform Outputs Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: tf_outputs
-          path: /tmp/tf_outputs.json
-          retention-days: 5
+  #     - name: Upload Terraform Outputs Artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: tf_outputs
+  #         path: /tmp/tf_outputs.json
+  #         retention-days: 5
 
-  unit-tests:
-    needs: aws-infrastructure
-    name: Run Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@master
+  # unit-tests:
+  #   needs: aws-infrastructure
+  #   name: Run Unit Tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@master
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
+  #     - name: Set up Python 3.8
+  #       uses: actions/setup-python@v1
+  #       with:
+  #         python-version: 3.8
 
-      - name: Install pipenv
-        uses: dschep/install-pipenv-action@v1
+  #     - name: Install pipenv
+  #       uses: dschep/install-pipenv-action@v1
 
-      - name: Run Unit Tests
-        env:
-          AWS_DEFAULT_REGION: ${{ env.aws_region }}
-        run: |
-          pipenv install --dev
-          pipenv run pytest ${{ env.unit_tests_dir }}
+  #     - name: Run Unit Tests
+  #       env:
+  #         AWS_DEFAULT_REGION: ${{ env.aws_region }}
+  #       run: |
+  #         pipenv install --dev
+  #         pipenv run pytest ${{ env.unit_tests_dir }}
   
   unit-tests-temp:
     runs-on: ubuntu-latest
