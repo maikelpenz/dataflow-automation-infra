@@ -27,7 +27,7 @@ echo "ls tmp"
 ls /tmp/
 
 # move to /tmp/
-mv $workflow_path /tmp/$workflow_path
+mv $workflow_path/ /tmp/$workflow_path
 # move flow register into the flow folder
 # mv /tmp/workflow_helpers.py /tmp/$workflow_path/workflow_helpers.py
 # mv /tmp/workflow_register.py /tmp/$workflow_path/workflow_register.py
