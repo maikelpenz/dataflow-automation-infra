@@ -28,6 +28,8 @@ echo "post pwd"
 git clone --branch $branch_name \
          --no-checkout $git_url
 
+echo "ls0"
+ls
 cd $repository_name
 echo "ls1"
 ls
@@ -38,6 +40,8 @@ echo "ls2"
 ls
 echo "pwd2"
 pwd
+echo "ls workflowpath"
+ls $workflow_path
 # move to /tmp/
 mv $workflow_path /tmp/$workflow_path
 # move flow register into the flow folder
