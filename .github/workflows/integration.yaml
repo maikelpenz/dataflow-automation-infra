@@ -222,9 +222,9 @@ jobs:
             --environment=${{ env.env }} \
             --prefect_token_secret_name=${{ env.prefect_token_secret_name }}
 
-  functional-tests:
+  functional-test-prefect-agent:
     needs: [prefect-project-setup, prefect-agent-setup]
-    name: Run Functional Tests
+    name: Functional Test - Prefect Agent
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -250,4 +250,38 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.aws_region }}
         run: |
           pipenv install --dev
-          pipenv run pytest ${{ env.function_tests_dir }}
+          pipenv run pytest ${{ env.function_tests_dir }}/prefect_agent
+
+  functional-test-workflow-register:
+    name: Functional Test - Workflow Register
+    needs: [prefect-project-setup, prefect-agent-setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
+
+      - name: Get Commit hash and Branch Name
+        id: action_vars
+        shell: bash
+        run: |
+          echo "##[set-output name=branch_name;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo ${GITHUB_REF#refs/heads/}
+          echo "::set-output name=commit_sha::$(git rev-parse --short HEAD)"
+          echo $(git rev-parse --short HEAD)
+
+      - name: Register Workflow with Prefect Cloud
+        id: register_workflow
+        uses: maikelpenz/dataflow-automation-infra/prefect_setup/prefect_register@github_action_test
+        with:
+          env: test
+          git_url: 'https://github.com/maikelpenz/dataflow-automation-infra.git'
+          branch_name: develop
+          commit_sha: ${{ steps.action_vars.outputs.commit_sha }}
+          workflow_path: 'tests/functional/prefect_register/functional_workflow'
+          prefect_register_token_secret_name: 'prefectregistertoken'

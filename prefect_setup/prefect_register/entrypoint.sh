@@ -10,15 +10,19 @@ prefect_register_token_secret_name=$6
 git_url_basename=$(basename $git_url)
 repository_name=${git_url_basename%.*}
 
-# clone workflow into container
-git clone --branch $branch_name \
+if [ $repository_name != "dataflow-automation-infra" ]; then
+   # clone workflow into container
+   git clone --branch $branch_name \
          --no-checkout $git_url
 
-cd $repository_name
-git checkout $commit_sha -- $workflow_path
+   cd $repository_name
+   git checkout $commit_sha -- $workflow_path
+fi
 
 # move to /tmp/
-mv $workflow_path /tmp/$workflow_path
+mkdir -p /tmp/$workflow_path
+mv $workflow_path/* /tmp/$workflow_path
+
 # move flow register into the flow folder
 mv /tmp/workflow_helpers.py /tmp/$workflow_path/workflow_helpers.py
 mv /tmp/workflow_register.py /tmp/$workflow_path/workflow_register.py
@@ -29,8 +33,6 @@ mv /tmp/prefect_helpers.py /tmp/$workflow_path/prefect_helpers.py
 pip3 install prefect
 # install boto3
 pip3 install boto3
-
-#cd /tmp/$workflow_path
 
 # register workflow
 python3 /tmp/$workflow_path/workflow_register.py \
