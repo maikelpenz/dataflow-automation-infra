@@ -11,20 +11,24 @@ git_url_basename=$(basename $git_url)
 repository_name=${git_url_basename%.*}
 
 if [ $repository_name != "dataflow-automation-infra" ]; then
+   echo "wronggg"
    # clone workflow into container
-    git clone --branch $branch_name \
+   git clone --branch $branch_name \
          --no-checkout $git_url
 
-    cd $repository_name
-    git checkout $commit_sha -- $workflow_path
+   cd $repository_name
+   git checkout $commit_sha -- $workflow_path
 fi
 
 echo "ls"
 ls
+echo "----"
 echo "ls path"
 ls $workflow_path
+echo "----"
 echo "ls tmp"
 ls /tmp/
+echo "----"
 
 # move to /tmp/
 mv $workflow_path/ /tmp/$workflow_path
