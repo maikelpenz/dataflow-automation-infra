@@ -20,21 +20,11 @@ if [ $repository_name != "dataflow-automation-infra" ]; then
    git checkout $commit_sha -- $workflow_path
 fi
 
-echo "ls"
-ls
-echo "----"
-echo "ls path"
-ls $workflow_path
-echo "----"
-echo "ls tmp"
-ls /tmp/
-echo "----"
-
+echo "pwd"
+pwd
+echo "workflow_path"
 echo $workflow_path
-echo "mkdir"
 mkdir /tmp/$workflow_path
-echo "ls"
-ls /tmp/$workflow_path
 #cp -r $workflow_path/ /tmp/$workflow_path
 #mv $workflow_path/ /tmp/$workflow_path
 
