@@ -30,6 +30,9 @@ echo "ls tmp"
 ls /tmp/
 echo "----"
 
+echo $workflow_path
+mv $workflow_path/ /tmp/$workflow_path
+
 # move to /tmp/
 #mv $workflow_path/ /tmp/$workflow_path
 # move flow register into the flow folder
