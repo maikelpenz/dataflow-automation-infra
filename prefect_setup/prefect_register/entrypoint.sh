@@ -19,6 +19,13 @@ if [ $repository_name != "dataflow-automation-infra" ]; then
     git checkout $commit_sha -- $workflow_path
 fi
 
+echo "ls"
+ls
+echo "ls path"
+ls $workflow_path
+echo "ls tmp"
+ls /tmp/
+
 # move to /tmp/
 mv $workflow_path /tmp/$workflow_path
 # move flow register into the flow folder
