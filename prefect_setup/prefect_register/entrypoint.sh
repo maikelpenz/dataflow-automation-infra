@@ -24,7 +24,7 @@ echo "pwd"
 pwd
 echo "workflow_path"
 echo $workflow_path
-mkdir /tmp/$workflow_path
+mkdir -p /tmp/$workflow_path
 #cp -r $workflow_path/ /tmp/$workflow_path
 #mv $workflow_path/ /tmp/$workflow_path
 
