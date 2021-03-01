@@ -31,8 +31,11 @@ ls /tmp/
 echo "----"
 
 echo $workflow_path
+echo "mkdir"
 mkdir /tmp/$workflow_path
-cp -r $workflow_path/ /tmp/$workflow_path
+echo "ls"
+ls /tmp/$workflow_path
+#cp -r $workflow_path/ /tmp/$workflow_path
 #mv $workflow_path/ /tmp/$workflow_path
 
 # move to /tmp/
