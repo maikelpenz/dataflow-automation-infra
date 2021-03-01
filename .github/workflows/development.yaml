@@ -147,7 +147,7 @@ jobs:
           echo $(git rev-parse --short HEAD)
       - name: Register Workflow with Prefect Cloud
         id: register_workflow
-        uses: maikelpenz/dataflow-automation-infra/prefect_setup/prefect_register@v1
+        uses: maikelpenz/dataflow-automation-infra/prefect_setup/prefect_register@github_action_dev
         with:
           env: dev
           git_url: 'https://github.com/maikelpenz/dataflow-automation-infra.git'
