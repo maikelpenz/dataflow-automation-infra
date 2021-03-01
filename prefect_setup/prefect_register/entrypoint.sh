@@ -20,17 +20,24 @@ echo "commit_sha"
 echo $commit_sha
 echo "workflow_path"
 echo $workflow_path
+echo "pwd"
+pwd
+echo "post pwd"
 
 # clone workflow into container
 git clone --branch $branch_name \
          --no-checkout $git_url
 
 cd $repository_name
-echo "ls and pwd"
+echo "ls1"
 ls
+echo "pwd1"
 pwd
 git checkout $commit_sha -- $workflow_path
-
+echo "ls2"
+ls
+echo "pwd2"
+pwd
 # move to /tmp/
 mv $workflow_path /tmp/$workflow_path
 # move flow register into the flow folder
