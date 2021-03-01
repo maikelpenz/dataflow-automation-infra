@@ -11,7 +11,6 @@ git_url_basename=$(basename $git_url)
 repository_name=${git_url_basename%.*}
 
 if [ $repository_name != "dataflow-automation-infra" ]; then
-   echo "wronggg"
    # clone workflow into container
    git clone --branch $branch_name \
          --no-checkout $git_url
@@ -34,7 +33,8 @@ pip3 install prefect
 # install boto3
 pip3 install boto3
 
-#cd /tmp/$workflow_path
+echo "ls maikel"
+ls $workflow_path
 
 # register workflow
 python3 /tmp/$workflow_path/workflow_register.py \
