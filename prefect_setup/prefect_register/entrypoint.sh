@@ -21,7 +21,7 @@ fi
 
 # move to /tmp/
 mkdir -p /tmp/$workflow_path
-mv $workflow_path/ /tmp/$workflow_path
+mv $workflow_path/* /tmp/$workflow_path
 
 # move flow register into the flow folder
 # mv /tmp/workflow_helpers.py /tmp/$workflow_path/workflow_helpers.py
