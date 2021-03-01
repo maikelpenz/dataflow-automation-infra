@@ -29,18 +29,12 @@ mv /tmp/workflow_register.py /tmp/$workflow_path/workflow_register.py
 mv /tmp/aws_conn_helpers.py /tmp/$workflow_path/aws_conn_helpers.py
 mv /tmp/prefect_helpers.py /tmp/$workflow_path/prefect_helpers.py
 
-echo "workflow_path"
-echo $workflow_path
+# install prefect
+pip3 install prefect
+# install boto3
+pip3 install boto3
 
-echo "ls maikel"
-ls /tmp/$workflow_path/
-
-# # install prefect
-# pip3 install prefect
-# # install boto3
-# pip3 install boto3
-
-# # register workflow
-# python3 /tmp/$workflow_path/workflow_register.py \
-#  --env=$env \
-#  --prefect_register_token_secret_name=$prefect_register_token_secret_name
+# register workflow
+python3 /tmp/$workflow_path/workflow_register.py \
+ --env=$env \
+ --prefect_register_token_secret_name=$prefect_register_token_secret_name
