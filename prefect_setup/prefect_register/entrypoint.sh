@@ -35,6 +35,9 @@ pip3 install prefect
 # install boto3
 pip3 install boto3
 
+echo "maikel"
+echo $prefect_execution_environment
+
 # register workflow
 python3 /tmp/$workflow_path/workflow_register.py \
  --env=$env \
