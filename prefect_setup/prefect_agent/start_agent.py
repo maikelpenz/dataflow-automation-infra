@@ -22,14 +22,15 @@ def get_agent_definition(agent_type: str, **agent_args: str) -> object:
     Return:
         [object] -- prefect agent object
     """
+    if agent_args:
+        subnets_list = agent_args.get("subnets").split("|")
+        aws_region = agent_args.get("aws_region")
+        environment = agent_args.get("environment")
+
     if agent_type == "Fargate":
         # imported here as the environment variable PREFECT__CLOUD__AGENT__AUTH_TOKEN
         # must already be in place
         from prefect.agent.fargate import FargateAgent
-
-        subnets_list = agent_args.get("subnets").split("|")
-        aws_region = agent_args.get("aws_region")
-        environment = agent_args.get("environment")
 
         return FargateAgent(
             region_name=aws_region,
@@ -59,6 +60,40 @@ def get_agent_definition(agent_type: str, **agent_args: str) -> object:
             ],
             labels=[f"{environment}_dataflow_automation"],
         )
+    elif agent_type == "ECS":
+        # imported here as the environment variable PREFECT__CLOUD__AGENT__AUTH_TOKEN
+        # must already be in place
+        from prefect.agent.ecs.agent import ECSAgent
+
+        return ECSAgent(
+            region_name=aws_region,
+            cpu=agent_args.get("agent_cpu"),
+            memory=agent_args.get("agent_memory"),
+            cluster=agent_args.get("cluster_name"),
+            taskRoleArn=agent_args.get("task_role_arn"),
+            executionRoleArn=agent_args.get("execution_role_arn"),
+            networkConfiguration={
+                "awsvpcConfiguration": {
+                    "assignPublicIp": "ENABLED",
+                    "subnets": subnets_list,
+                    "securityGroups": [],
+                }
+            },
+            containerDefinitions=[
+                {
+                    "logConfiguration": {
+                        "logDriver": "awslogs",
+                        "options": {
+                            "awslogs-region": aws_region,
+                            "awslogs-group": f"{environment}_ecs_dataflow_automation_agent",
+                            "awslogs-stream-prefix": "workflow_start",
+                        },
+                    },
+                }
+            ],
+            labels=[f"{environment}_ecs_dataflow_automation"],
+        )
+
     else:
         raise ValueError(f"'{agent_type}' is not a valid agent type")
 
