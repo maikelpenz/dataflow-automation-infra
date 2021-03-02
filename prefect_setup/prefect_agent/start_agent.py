@@ -70,7 +70,7 @@ def get_agent_definition(agent_type: str, **agent_args: str) -> object:
             # cpu=agent_args.get("agent_cpu"),
             # memory=agent_args.get("agent_memory"),
             cluster=agent_args.get("cluster_name"),
-            taskRoleArn=agent_args.get("task_role_arn"),
+            # taskRoleArn=agent_args.get("task_role_arn"),
             executionRoleArn=agent_args.get("execution_role_arn"),
             networkConfiguration={
                 "awsvpcConfiguration": {
