@@ -123,7 +123,7 @@ class WorkflowHelpers:
             )
 
         elif prefect_execution_environment == "ecs_fargate":
-
+            print("maikel 6")
             flow_module.flow.storage = EcsDocker(
                 registry_url=f"{account_id}.dkr.ecr.{aws_region}.amazonaws.com",
                 image_name=flow_name,
@@ -132,7 +132,7 @@ class WorkflowHelpers:
                 env_vars={"PYTHONPATH": "/opt/prefect/flows"},
             )
 
-            flow_module.flow.storage.config = ECSRun(
+            flow_module.flow.config = ECSRun(
                 run_task_kwargs={
                     "cluster": f"{environment}_dataflow_automation_workflows",
                 },
