@@ -224,7 +224,7 @@ jobs:
 
   functional-test-workflow-register:
     name: Functional Test - Workflow Register
-    needs: [prefect-project-setup, prefect-agent-setup]
+    needs: [prefect-agent-setup]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
