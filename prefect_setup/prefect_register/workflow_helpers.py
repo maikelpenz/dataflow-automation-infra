@@ -9,6 +9,8 @@ from botocore.exceptions import ClientError
 from prefect import Client
 from prefect.environments import FargateTaskEnvironment
 from prefect.environments.storage import Docker
+from prefect.storage import Docker as EcsDocker
+from prefect.run_configs import ECSRun
 
 from prefect_helpers import PrefectHelpers
 from aws_conn_helpers import AwsConnHelpers
@@ -50,12 +52,15 @@ class WorkflowHelpers:
         """
         return __import__("flow")
 
-    def set_workflow_properties(self, environment: str) -> Tuple:
+    def set_workflow_properties(
+        self, environment: str, prefect_execution_environment: str
+    ) -> Tuple:
         """
         Construct the Workflow object with its properties
 
         Parameters:
             environment [string] -- environment the workflow should be pushed to
+            prefect_execution_environment [string] -- e.g: ecs_fargate, dask
         """
         (
             account_id,
@@ -71,59 +76,87 @@ class WorkflowHelpers:
         flow_name = f"{environment}_{flow_module.flow.name}"
         flow_module.flow.name = flow_name
 
-        flow_module.flow.environment = FargateTaskEnvironment(
-            requiresCompatibilities=["FARGATE"],
-            region=aws_region,
-            labels=[f"{environment}_dataflow_automation"],
-            taskDefinition=flow_name,
-            family=flow_name,
-            cpu="512",
-            memory="3072",
-            networkMode="awsvpc",
-            networkConfiguration={
-                "awsvpcConfiguration": {
-                    "assignPublicIp": "ENABLED",
-                    "subnets": subnets,
-                    "securityGroups": [],
-                }
-            },
-            containerDefinitions=[
-                {
-                    "logConfiguration": {
-                        "logDriver": "awslogs",
-                        "options": {
-                            "awslogs-region": aws_region,
-                            "awslogs-group": f"{environment}_dataflow_automation_workflows",
-                            "awslogs-stream-prefix": flow_name,
-                        },
+        if prefect_execution_environment == "fargate":
+            flow_module.flow.environment = FargateTaskEnvironment(
+                requiresCompatibilities=["FARGATE"],
+                region=aws_region,
+                labels=[f"{environment}_dataflow_automation"],
+                taskDefinition=flow_name,
+                family=flow_name,
+                cpu="512",
+                memory="3072",
+                networkMode="awsvpc",
+                networkConfiguration={
+                    "awsvpcConfiguration": {
+                        "assignPublicIp": "ENABLED",
+                        "subnets": subnets,
+                        "securityGroups": [],
                     }
-                }
-            ],
-            executionRoleArn=execution_role_arn,
-            taskRoleArn=task_role_arn,
-            cluster=f"{environment}_dataflow_automation_workflows",
-        )
+                },
+                containerDefinitions=[
+                    {
+                        "logConfiguration": {
+                            "logDriver": "awslogs",
+                            "options": {
+                                "awslogs-region": aws_region,
+                                "awslogs-group": f"{environment}_dataflow_automation_workflows",
+                                "awslogs-stream-prefix": flow_name,
+                            },
+                        }
+                    }
+                ],
+                executionRoleArn=execution_role_arn,
+                taskRoleArn=task_role_arn,
+                cluster=f"{environment}_dataflow_automation_workflows",
+            )
 
-        # Set the flow storage. Where to get the code from
-        flow_module.flow.storage = Docker(
-            registry_url=f"{account_id}.dkr.ecr.{aws_region}.amazonaws.com",
-            image_name=flow_name,
-            image_tag="latest",
-            python_dependencies=["boto3"],
-            env_vars={"PYTHONPATH": "/opt/prefect/flows"},
-        )
+            # Set the flow storage. Where to get the code from
+            flow_module.flow.storage = Docker(
+                registry_url=f"{account_id}.dkr.ecr.{aws_region}.amazonaws.com",
+                image_name=flow_name,
+                image_tag="latest",
+                python_dependencies=["boto3"],
+                env_vars={"PYTHONPATH": "/opt/prefect/flows"},
+            )
+        elif prefect_execution_environment == "ecs_fargate":
+
+            flow_module.flow.storage = EcsDocker(
+                registry_url=f"{account_id}.dkr.ecr.{aws_region}.amazonaws.com",
+                image_name=flow_name,
+                image_tag="latest",
+                python_dependencies=["boto3"],
+                env_vars={"PYTHONPATH": "/opt/prefect/flows"},
+            )
+
+            flow_module.flow.storage.config = ECSRun(
+                run_task_kwargs={
+                    "cluster": f"{environment}_dataflow_automation_workflows",
+                },
+                execution_role_arn=execution_role_arn,
+                labels=[f"{environment}_dataflow_automation"],
+            )
+
         return flow_module, flow_name
 
-    def register_workflow(self, environment: str, prefect_register_token_secret_name: str) -> None:
+    def register_workflow(
+        self,
+        environment: str,
+        prefect_execution_environment: str,
+        prefect_register_token_secret_name: str,
+    ) -> None:
         """
         Registers the workflow to Prefect Cloud
 
         Parameters:
-            prefect_register_token_secret_name [str]
+            environment [string] -- environment the workflow should be pushed to
+            prefect_execution_environment [string] -- e.g: ecs_fargate, dask
+            prefect_register_token_secret_name [string]
                 -- name of aws secrets manager secret where prefect register token is stored
         """
         # set flow properties
-        flow_module, flow_name = self.set_workflow_properties(environment)
+        flow_module, flow_name = self.set_workflow_properties(
+            environment, prefect_execution_environment
+        )
 
         # Authenticate to ECR as the registration process pushes the image to AWS
         self.aws_conn_helpers.ecr_authenticate()
