@@ -132,7 +132,7 @@ class WorkflowHelpers:
                 env_vars={"PYTHONPATH": "/opt/prefect/flows"},
             )
 
-            flow_module.flow.config = ECSRun(
+            flow_module.flow.run_config = ECSRun(
                 run_task_kwargs={
                     "cluster": f"{environment}_dataflow_automation_workflows",
                 },
@@ -140,6 +140,8 @@ class WorkflowHelpers:
                 labels=[f"{environment}_dataflow_automation"],
             )
 
+        print("flow_module")
+        print(flow_module)
         return flow_module, flow_name
 
     def register_workflow(
