@@ -14,9 +14,6 @@ prefect_execution_environment = args.prefect_execution_environment
 # Instantiante Workflow Helpers
 workflow_helpers = WorkflowHelpers()
 
-print("maikel2")
-print(prefect_execution_environment)
-
 # Register Workflow
 workflow_helpers.register_workflow(
     environment, prefect_execution_environment, prefect_register_token_secret_name

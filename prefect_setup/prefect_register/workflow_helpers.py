@@ -76,9 +76,6 @@ class WorkflowHelpers:
         flow_name = f"{environment}_{flow_module.flow.name}"
         flow_module.flow.name = flow_name
 
-        print("maikel4")
-        print(prefect_execution_environment)
-
         if prefect_execution_environment == "fargate":
             flow_module.flow.environment = FargateTaskEnvironment(
                 requiresCompatibilities=["FARGATE"],
@@ -123,7 +120,6 @@ class WorkflowHelpers:
             )
 
         elif prefect_execution_environment == "ecs_fargate":
-            print("maikel 6")
             flow_module.flow.storage = EcsDocker(
                 registry_url=f"{account_id}.dkr.ecr.{aws_region}.amazonaws.com",
                 image_name=flow_name,
@@ -140,8 +136,6 @@ class WorkflowHelpers:
                 labels=[f"{environment}_dataflow_automation"],
             )
 
-        print("flow_module")
-        print(flow_module)
         return flow_module, flow_name
 
     def register_workflow(
@@ -159,8 +153,6 @@ class WorkflowHelpers:
             prefect_register_token_secret_name [string]
                 -- name of aws secrets manager secret where prefect register token is stored
         """
-        print("maikel3")
-        print(prefect_execution_environment)
 
         # set flow properties
         flow_module, flow_name = self.set_workflow_properties(
