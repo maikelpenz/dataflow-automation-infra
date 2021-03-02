@@ -79,18 +79,18 @@ def get_agent_definition(agent_type: str, **agent_args: str) -> object:
             #         "securityGroups": [],
             #     }
             # },
-            containerDefinitions=[
-                {
-                    "logConfiguration": {
-                        "logDriver": "awslogs",
-                        "options": {
-                            "awslogs-region": aws_region,
-                            "awslogs-group": f"{environment}_ecs_dataflow_automation_agent",
-                            "awslogs-stream-prefix": "workflow_start",
-                        },
-                    },
-                }
-            ],
+            # containerDefinitions=[
+            #     {
+            #         "logConfiguration": {
+            #             "logDriver": "awslogs",
+            #             "options": {
+            #                 "awslogs-region": aws_region,
+            #                 "awslogs-group": f"{environment}_ecs_dataflow_automation_agent",
+            #                 "awslogs-stream-prefix": "workflow_start",
+            #             },
+            #         },
+            #     }
+            # ],
             labels=[f"{environment}_ecs_dataflow_automation"],
         )
 
