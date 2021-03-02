@@ -48,60 +48,60 @@ jobs:
           git tag -a -m "Create/Update Github Action Tag" ${{ env.gh_action_repository_tag }}
           git push --follow-tags
   
-  # aws-infrastructure:
-  #   name: Deploy AWS Infrastructure
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@master
+  aws-infrastructure:
+    name: Deploy AWS Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
 
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ${{ env.aws_region }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
 
-  #     - name: Setup Terraform
-  #       uses: hashicorp/setup-terraform@v1
-  #       with:
-  #         terraform_version: ${{ env.tf_version }}
-  #         terraform_wrapper: false
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.tf_version }}
+          terraform_wrapper: false
 
-  #     - name: Terraform Init
-  #       id: init
-  #       run: |
-  #         cd ${{ env.tf_working_dir }}
-  #         terraform init -backend-config="bucket=${{ env.tf_state_bucket }}" -backend-config="key=${{ env.env }}/terraform.tfstate"
+      - name: Terraform Init
+        id: init
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform init -backend-config="bucket=${{ env.tf_state_bucket }}" -backend-config="key=${{ env.env }}/terraform.tfstate"
 
-  #     - name: Terraform Validate
-  #       id: validate
-  #       run: terraform validate
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
 
-  #     - name: Terraform Plan
-  #       id: plan
-  #       run: |
-  #         cd ${{ env.tf_working_dir }}
-  #         terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform plan -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
 
-  #     - name: Terraform Apply
-  #       id: apply
-  #       run: |
-  #         cd ${{ env.tf_working_dir }}
-  #         terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
+      - name: Terraform Apply
+        id: apply
+        run: |
+          cd ${{ env.tf_working_dir }}
+          terraform apply -auto-approve -var="env=${{ env.env }}" -var="aws_region=${{ env.aws_region }}" -var="tf_artifacts_bucket=${{ env.tf_artifacts_bucket }}" -var="prefect_agent_up=${{ env.prefect_agent_up }}"
 
-  #     - name: Terraform Outputs
-  #       run: |
-  #         cd ${{ env.tf_working_dir }}
-  #         output=$(terraform output --json)
-  #         echo $output >> /tmp/tf_outputs.json
+      - name: Terraform Outputs
+        run: |
+          cd ${{ env.tf_working_dir }}
+          output=$(terraform output --json)
+          echo $output >> /tmp/tf_outputs.json
 
-  #     - name: Upload Terraform Outputs Artifact
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: tf_outputs
-  #         path: /tmp/tf_outputs.json
-  #         retention-days: 5
+      - name: Upload Terraform Outputs Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tf_outputs
+          path: /tmp/tf_outputs.json
+          retention-days: 5
 
   # unit-tests:
   #   needs: aws-infrastructure
@@ -128,7 +128,7 @@ jobs:
   
   prefect-agent-setup:
     #needs: unit-tests
-    needs: tag-github-action
+    needs: aws-infrastructure
     name: Prefect Agent Setup
     runs-on: ubuntu-latest
     steps:
@@ -194,31 +194,30 @@ jobs:
           
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-  prefect-project-setup:
-    #needs: unit-tests
-    needs: tag-github-action
-    name: Prefect Project Setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@master
+  # prefect-project-setup:
+  #   needs: unit-tests
+  #   name: Prefect Project Setup
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@master
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.aws_region }}
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ${{ env.aws_region }}
 
-      - name: Setup Prefect Project
-        run: |
-          cp ${{ env.prefect_project_working_dir }}/prefect_project_setup.py prefect_setup/
-          touch prefect_setup/__init__.py
+  #     - name: Setup Prefect Project
+  #       run: |
+  #         cp ${{ env.prefect_project_working_dir }}/prefect_project_setup.py prefect_setup/
+  #         touch prefect_setup/__init__.py
 
-          pip3 install --user setuptools
-          pip3 install --user prefect
-          pip3 install --user boto3
+  #         pip3 install --user setuptools
+  #         pip3 install --user prefect
+  #         pip3 install --user boto3
 
-          python3 prefect_setup/prefect_project_setup.py \
-            --environment=${{ env.env }} \
-            --prefect_token_secret_name=${{ env.prefect_token_secret_name }}
+  #         python3 prefect_setup/prefect_project_setup.py \
+  #           --environment=${{ env.env }} \
+  #           --prefect_token_secret_name=${{ env.prefect_token_secret_name }}
