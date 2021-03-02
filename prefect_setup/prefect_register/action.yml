@@ -19,6 +19,9 @@ inputs:
   prefect_register_token_secret_name:
     description: 'AWS Secrets manager name where prefect register token is stored'
     required: true
+  prefect_execution_environment:
+    description: 'Prefect execution environment. E.g: ecs_fargate, kubernetes'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -29,3 +32,4 @@ runs:
     - ${{ inputs.commit_sha }}
     - ${{ inputs.workflow_path }}
     - ${{ inputs.prefect_register_token_secret_name }}
+    - ${{ inputs.prefect_execution_environment }}

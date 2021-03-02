@@ -23,3 +23,4 @@ with:
   commit_sha: ${{ steps.action_vars.outputs.commit_sha }}
   workflow_path: 'workflow'
   prefect_register_token_secret_name: 'prefectregistertoken'
+  prefect_execution_environment: 'ecs_fargate'

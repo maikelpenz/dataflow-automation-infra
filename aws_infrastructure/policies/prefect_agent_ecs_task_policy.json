@@ -8,7 +8,9 @@
                 "ecs:*",
                 "logs:*",
                 "secretsmanager:*",
-                "iam:PassRole"
+                "iam:PassRole",
+                "ec2:DescribeVpcs",
+                "ec2:DescribeSubnets"
             ],
             "Resource": "*"
         }

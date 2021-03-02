@@ -180,7 +180,7 @@ jobs:
           cp ../shared/prefect_helpers.py .
           
           docker build \
-          --build-arg agent_type_arg=Fargate \
+          --build-arg agent_type_arg=ecs_fargate \
           --build-arg aws_region_arg=${{ env.aws_region }} \
           --build-arg agent_cpu_arg=${{ env.agent_cpu }} \
           --build-arg agent_memory_arg=${{ env.agent_memory }} \
@@ -285,3 +285,4 @@ jobs:
           commit_sha: ${{ steps.action_vars.outputs.commit_sha }}
           workflow_path: 'tests/functional/prefect_register/functional_workflow'
           prefect_register_token_secret_name: 'prefectregistertoken'
+          prefect_execution_environment: 'ecs_fargate'
