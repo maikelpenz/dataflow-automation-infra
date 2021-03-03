@@ -7,9 +7,7 @@ sys.path.append(os.path.realpath(os.path.dirname(__file__)))
 
 from botocore.exceptions import ClientError
 from prefect import Client
-from prefect.environments import FargateTaskEnvironment
-from prefect.environments.storage import Docker
-from prefect.storage import Docker as EcsDocker
+from prefect.storage import Docker
 from prefect.run_configs import ECSRun
 
 from prefect_helpers import PrefectHelpers
@@ -60,14 +58,12 @@ class WorkflowHelpers:
 
         Parameters:
             environment [string] -- environment the workflow should be pushed to
-            prefect_execution_environment [string] -- e.g: ecs_fargate, dask
+            prefect_execution_environment [string] -- e.g: ecs_fargate, kubernetes
         """
         (
             account_id,
             aws_region,
-            subnets,
-            execution_role_arn,
-            task_role_arn,
+            execution_role_arn_value,
         ) = self.prefect_helpers.get_prefect_aws_infrastructure(environment)
 
         # import flow
@@ -76,51 +72,8 @@ class WorkflowHelpers:
         flow_name = f"{environment}_{flow_module.flow.name}"
         flow_module.flow.name = flow_name
 
-        if prefect_execution_environment == "fargate":
-            flow_module.flow.environment = FargateTaskEnvironment(
-                requiresCompatibilities=["FARGATE"],
-                region=aws_region,
-                labels=[f"{environment}_dataflow_automation"],
-                taskDefinition=flow_name,
-                family=flow_name,
-                cpu="512",
-                memory="3072",
-                networkMode="awsvpc",
-                networkConfiguration={
-                    "awsvpcConfiguration": {
-                        "assignPublicIp": "ENABLED",
-                        "subnets": subnets,
-                        "securityGroups": [],
-                    }
-                },
-                containerDefinitions=[
-                    {
-                        "logConfiguration": {
-                            "logDriver": "awslogs",
-                            "options": {
-                                "awslogs-region": aws_region,
-                                "awslogs-group": f"{environment}_dataflow_automation_workflows",
-                                "awslogs-stream-prefix": flow_name,
-                            },
-                        }
-                    }
-                ],
-                executionRoleArn=execution_role_arn,
-                taskRoleArn=task_role_arn,
-                cluster=f"{environment}_dataflow_automation_workflows",
-            )
-
-            # Set the flow storage. Where to get the code from
+        if prefect_execution_environment == "ecs_fargate":
             flow_module.flow.storage = Docker(
-                registry_url=f"{account_id}.dkr.ecr.{aws_region}.amazonaws.com",
-                image_name=flow_name,
-                image_tag="latest",
-                python_dependencies=["boto3"],
-                env_vars={"PYTHONPATH": "/opt/prefect/flows"},
-            )
-
-        elif prefect_execution_environment == "ecs_fargate":
-            flow_module.flow.storage = EcsDocker(
                 registry_url=f"{account_id}.dkr.ecr.{aws_region}.amazonaws.com",
                 image_name=flow_name,
                 image_tag="latest",
@@ -132,7 +85,7 @@ class WorkflowHelpers:
                 run_task_kwargs={
                     "cluster": f"{environment}_dataflow_automation_workflows",
                 },
-                execution_role_arn=execution_role_arn,
+                execution_role_arn=execution_role_arn_value,
                 labels=[f"{environment}_dataflow_automation"],
             )
 
@@ -149,7 +102,7 @@ class WorkflowHelpers:
 
         Parameters:
             environment [string] -- environment the workflow should be pushed to
-            prefect_execution_environment [string] -- e.g: ecs_fargate, dask
+            prefect_execution_environment [string] -- e.g: ecs_fargate, kubernetes
             prefect_register_token_secret_name [string]
                 -- name of aws secrets manager secret where prefect register token is stored
         """

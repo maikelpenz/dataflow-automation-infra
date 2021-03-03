@@ -10,7 +10,7 @@ import pytest
 @pytest.fixture
 def fargate_agent_definition():
     return start_agent.get_agent_definition(
-        "Fargate",
+        "ecs_fargate",
         subnets="123",
         aws_region="ap-southeast-2",
         environment="dev",
