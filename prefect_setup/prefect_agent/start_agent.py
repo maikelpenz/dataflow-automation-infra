@@ -68,7 +68,7 @@ def get_agent_definition(agent_type: str, **agent_args: str) -> object:
         return ECSAgent(
             region_name=aws_region,
             cluster=agent_args.get("cluster_name"),
-            labels=[f"{environment}_ecs_dataflow_automation"],
+            labels=[f"{environment}_dataflow_automation"],
         )
 
     else:
