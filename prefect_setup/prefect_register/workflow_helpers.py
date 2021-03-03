@@ -63,7 +63,9 @@ class WorkflowHelpers:
         (
             account_id,
             aws_region,
-            execution_role_arn_value,
+            subnets,
+            execution_role_arn,
+            task_role_arn,
         ) = self.prefect_helpers.get_prefect_aws_infrastructure(environment)
 
         # import flow
@@ -85,7 +87,7 @@ class WorkflowHelpers:
                 run_task_kwargs={
                     "cluster": f"{environment}_dataflow_automation_workflows",
                 },
-                execution_role_arn=execution_role_arn_value,
+                execution_role_arn=execution_role_arn,
                 labels=[f"{environment}_dataflow_automation"],
             )
 
