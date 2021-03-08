@@ -11,6 +11,18 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
+def _get_ecs_fargate_agent_definition(aws_region: str, environment: str, cluster: str):
+    # imported here as the environment variable PREFECT__CLOUD__AGENT__AUTH_TOKEN
+    # must already be in place
+    from prefect.agent.ecs.agent import ECSAgent
+
+    return ECSAgent(
+        region_name=aws_region,
+        cluster=cluster,
+        labels=[f"{environment}_dataflow_automation"],
+    )
+
+
 def get_agent_definition(agent_type: str, **agent_args: str) -> object:
     """
     Get the prefect agent definition
@@ -22,19 +34,11 @@ def get_agent_definition(agent_type: str, **agent_args: str) -> object:
     Return:
         [object] -- prefect agent object
     """
-    if agent_args:
-        aws_region = agent_args.get("aws_region")
-        environment = agent_args.get("environment")
-
     if agent_type == "ecs_fargate":
-        # imported here as the environment variable PREFECT__CLOUD__AGENT__AUTH_TOKEN
-        # must already be in place
-        from prefect.agent.ecs.agent import ECSAgent
-
-        return ECSAgent(
-            region_name=aws_region,
-            cluster=agent_args.get("cluster_name"),
-            labels=[f"{environment}_dataflow_automation"],
+        return _get_ecs_fargate_agent_definition(
+            agent_args.get("aws_region"),
+            agent_args.get("environment"),
+            agent_args.get("cluster_name"),
         )
     else:
         raise ValueError(f"'{agent_type}' is not a valid agent type")

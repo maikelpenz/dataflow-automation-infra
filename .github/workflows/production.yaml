@@ -19,7 +19,8 @@ env:
     agent_cpu: 512
     agent_memory: 1024
     prefect_token_secret_name: 'prefectagenttoken'
-    prefect_agent_up: 'false'
+    #prefect_agent_up: 'false'
+    prefect_agent_up: 'true'
     # prefect project
     prefect_project_working_dir: './prefect_setup/prefect_project'
     # github action
