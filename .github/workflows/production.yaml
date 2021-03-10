@@ -28,7 +28,7 @@ env:
 
 jobs:
   tag-github-action:
-      name: Tag Github Action
+      name: Tag GHAction
       runs-on: ubuntu-latest
       steps:
         - name: Checkout Repository
@@ -170,6 +170,7 @@ jobs:
 
   prefect-project-setup:
     name: Prefect Project Setup
+    needs: aws-infrastructure
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository

@@ -51,7 +51,11 @@ class WorkflowHelpers:
         return __import__("flow")
 
     def set_workflow_properties(
-        self, environment: str, prefect_execution_environment: str
+        self,
+        environment: str,
+        prefect_execution_environment: str,
+        workflow_cpu_configuration: int,
+        workflow_memory_configuration: int,
     ) -> Tuple:
         """
         Construct the Workflow object with its properties
@@ -59,6 +63,8 @@ class WorkflowHelpers:
         Parameters:
             environment [string] -- environment the workflow should be pushed to
             prefect_execution_environment [string] -- e.g: ecs_fargate, kubernetes
+            workflow_cpu_configuration [int] -- e.g: 256,512,1024,2048,4096
+            workflow_memory_configuration [int] -- e.g: 512,30720
         """
         (
             account_id,
@@ -89,6 +95,8 @@ class WorkflowHelpers:
                 },
                 execution_role_arn=execution_role_arn,
                 labels=[f"{environment}_dataflow_automation"],
+                cpu=workflow_cpu_configuration,
+                memory=workflow_memory_configuration,
             )
 
         return flow_module, flow_name
@@ -98,6 +106,8 @@ class WorkflowHelpers:
         environment: str,
         prefect_execution_environment: str,
         prefect_register_token_secret_name: str,
+        workflow_cpu_configuration: int,
+        workflow_memory_configuration: int,
     ) -> None:
         """
         Registers the workflow to Prefect Cloud
@@ -107,11 +117,16 @@ class WorkflowHelpers:
             prefect_execution_environment [string] -- e.g: ecs_fargate, kubernetes
             prefect_register_token_secret_name [string]
                 -- name of aws secrets manager secret where prefect register token is stored
+            workflow_cpu_configuration [int] -- e.g: 256,512,1024,2048,4096
+            workflow_memory_configuration [int] -- e.g: 512,30720
         """
 
         # set flow properties
         flow_module, flow_name = self.set_workflow_properties(
-            environment, prefect_execution_environment
+            environment,
+            prefect_execution_environment,
+            workflow_cpu_configuration,
+            workflow_memory_configuration,
         )
 
         # Authenticate to ECR as the registration process pushes the image to AWS

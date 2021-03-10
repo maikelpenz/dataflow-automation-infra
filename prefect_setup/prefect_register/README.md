@@ -24,3 +24,5 @@ with:
   workflow_path: 'workflow'
   prefect_register_token_secret_name: 'prefectregistertoken'
   prefect_execution_environment: 'ecs_fargate'
+  workflow_cpu_configuration: 512
+  workflow_memory_configuration: 1024

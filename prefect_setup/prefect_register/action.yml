@@ -22,6 +22,14 @@ inputs:
   prefect_execution_environment:
     description: 'Prefect execution environment. E.g: ecs_fargate, kubernetes'
     required: true
+  workflow_cpu_configuration:
+    description: 'Workflow CPU configuration'
+    required: true
+    default: 512
+  workflow_memory_configuration:
+    description: 'Workflow Memory configuration'
+    required: true
+    default: 1024
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -33,3 +41,5 @@ runs:
     - ${{ inputs.workflow_path }}
     - ${{ inputs.prefect_register_token_secret_name }}
     - ${{ inputs.prefect_execution_environment }}
+    - ${{ inputs.workflow_cpu_configuration }}
+    - ${{ inputs.workflow_memory_configuration }}

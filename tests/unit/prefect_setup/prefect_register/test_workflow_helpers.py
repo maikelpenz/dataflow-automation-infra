@@ -60,6 +60,8 @@ def test_set_workflow_properties_ecs_fargate_success(mocker):
     """
     environment = "test"
     execution_environment = "ecs_fargate"
+    cpu_configuration = 512
+    memory_configuration = 1024
 
     mocker.patch(
         "prefect_helpers.PrefectHelpers.get_prefect_aws_infrastructure",
@@ -67,7 +69,9 @@ def test_set_workflow_properties_ecs_fargate_success(mocker):
     )
     mocker.patch("prefect_setup.prefect_register.workflow_helpers.WorkflowHelpers.import_flow")
 
-    flow_module, _ = workflow_helpers.set_workflow_properties(environment, execution_environment)
+    flow_module, _ = workflow_helpers.set_workflow_properties(
+        environment, execution_environment, cpu_configuration, memory_configuration
+    )
 
     assert flow_module.flow.run_config.labels == {f"{environment}_dataflow_automation"}
     assert isinstance(flow_module.flow.run_config, ECSRun)
@@ -94,4 +98,4 @@ def test_register_workflow(mocker):
         return_value="PrefectToken",
     )
     with pytest.raises(Exception, match="'NoneType' object has no attribute 'flow'"):
-        workflow_helpers.register_workflow("test", "ecs_fargate", "PrefectTokenSecret")
+        workflow_helpers.register_workflow("test", "ecs_fargate", "PrefectTokenSecret", 512, 1024)

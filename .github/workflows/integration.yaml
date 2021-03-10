@@ -31,7 +31,7 @@ env:
 
 jobs:
   tag-github-action:
-    name: Tag Github Action
+    name: Tag GHAction
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -106,7 +106,7 @@ jobs:
 
   unit-tests:
     needs: aws-infrastructure
-    name: Run Unit Tests
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -224,7 +224,7 @@ jobs:
 
   functional-test-prefect-agent:
     needs: [prefect-project-setup, prefect-agent-setup]
-    name: Functional Test - Prefect Agent
+    name: Func Test - Prefect Agent
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -253,7 +253,7 @@ jobs:
           pipenv run pytest ${{ env.function_tests_dir }}/prefect_agent
 
   functional-test-workflow-register:
-    name: Functional Test - Workflow Register
+    name: Func Test - Workflow Register
     needs: [prefect-project-setup, prefect-agent-setup]
     runs-on: ubuntu-latest
     steps:
@@ -286,3 +286,5 @@ jobs:
           workflow_path: 'tests/functional/prefect_register/functional_workflow'
           prefect_register_token_secret_name: 'prefectregistertoken'
           prefect_execution_environment: 'ecs_fargate'
+          workflow_cpu_configuration: 512
+          workflow_memory_configuration: 1024
