@@ -30,27 +30,21 @@ By saying that, the responsibillity to *spin up* and *integrate* the execution l
 
 ### **High level view**
 
-<br>
-
 ![HighLevelView](images/high_level_view.png)
 
-<br>
 <br>
 
 ### **Detailed view**
 
-<br>
-
 ![DetailedView](images/detailed_view.png)
 
-<br>
 <br>
 
 ### **Deployment/Execution process**
 
-<br>
-
 ![DeploymentExecutionProcess](images/deployment_execution_process.png)
+
+<br>
 
 ## Deployment: how to
 
