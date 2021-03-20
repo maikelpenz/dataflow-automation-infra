@@ -8,17 +8,15 @@
 
 By saying that, the responsibillity to *spin up* and *integrate* the execution layer with *Prefect Cloud* is all on the customer's plate, demanding a decent level of engineering effort. This goal of this project is to:
 
+<br>
+
 **1 - Automate the creation of execution environments on AWS**
     <br>
     [Terraform](https://www.terraform.io/) is an open-source infrastructure as code tool used to spin up resources in the cloud. This project takes advantage of Terraform to spin up executions environments to run workflows.
 
-<br>
-
 **2 - Integrate execution environments with Prefect Cloud**
     <br>
     [Prefect Agent](https://docs.prefect.io/orchestration/agents/overview.html) are long running processes used to communicate customer's *execution environments* with *Prefect Cloud*. This project builds a container image to run the Prefect Agent and creates the infrastructure around it that guaratees it is fault-tolerant and can successfully authenticate to Prefect Cloud.
-
-<br>
 
 **3 - Offer an interface to register workflows**
     <br>
