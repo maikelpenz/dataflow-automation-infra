@@ -28,15 +28,12 @@ By saying that, the responsibillity to *spin up* and *integrate* the execution l
 
 ## Architecture/Components
 
-<br>
-
 ### **High level view**
 
 <br>
 
 ![HighLevelView](images/high_level_view.png)
 
-<br>
 <br>
 <br>
 
@@ -46,7 +43,6 @@ By saying that, the responsibillity to *spin up* and *integrate* the execution l
 
 ![DetailedView](images/detailed_view.png)
 
-<br>
 <br>
 <br>
 
