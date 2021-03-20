@@ -20,9 +20,9 @@ By saying that, the responsibillity to *spin up* and *integrate* the execution l
 
 **3 - Offer an interface to register workflows**
     <br>
-    [Github Actions](https://github.com/features/actions) is a feature on Github that automates the execution of workflows in response to events. It is used to define steps that build, test, and deploy projects on any platform while Github manages the execution. What makes Github Actions more interesting is that besides playing the common *CI/CD* role it also offers a marketplace where developers can use existing actions to support buildind their workflows and also publish their own actions for other developers/repositories to consume. 
+    [Github Actions](https://github.com/features/actions) is a feature on Github that automates the execution of workflows in response to events. It is used to define steps that build, test, and deploy projects on any platform while Github manages the execution. What makes Github Actions more interesting is that besides playing the common *CI/CD* role it also offers a marketplace where developers can use existing **Actions** to support buildind their workflows and also publishing their own actions for other developers/repositories to consume. 
     <br>
-    This project publishes/maintains a custom Github Action that deploys workflows to Prefect Cloud. This is available for other repositories to deploy workflows and run them inside the infrastructure deployed through this repository.
+    This project publishes/maintains a **custom Github Action** responsible for deploying workflows to Prefect Cloud. This **action** is made available in the marketplace so other repositories can easily push their workflows to Prefect Cloud and run them inside the AWS execution environments deployed in this repo. Please [check this repository](https://github.com/maikelpenz/dataflow-sample-workflow) to see this custom action in use.
 
 <br>
 
