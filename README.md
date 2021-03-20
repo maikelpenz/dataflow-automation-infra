@@ -28,10 +28,34 @@ By saying that, the responsibillity to *spin up* and *integrate* the execution l
 
 ## Architecture/Components
 
-< IMAGE >
+<br>
 
-* AWS infra
+### **High level view**
 
-* Github Action
+<br>
 
-## How to deploy it
+![HighLevelView](images/high_level_view.png)
+
+<br>
+<br>
+<br>
+
+### **Detailed view**
+
+<br>
+
+![DetailedView](images/detailed_view.png)
+
+<br>
+<br>
+<br>
+
+### **Deployment/Execution process**
+
+<br>
+
+![DeploymentExecutionProcess](images/deployment_execution_process.png)
+
+## Deployment: how to
+
+<TODO>
