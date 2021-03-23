@@ -10,8 +10,13 @@ This functional test verifies that the github action can successfully register w
 Important to note that this test is not done through `python` but as a step inside the CI/CD
 
 E.g:
-    file_name: .github/workflows/development.yaml
-    job: gh-action-workflow-register-test
-
-    file_name: .github/workflows/integration.yaml
-    job: functional-test-workflow-register
+<br>
+<br>
+file_name: .github/workflows/development.yaml
+<br>
+job: gh-action-workflow-register-test
+<br>
+<br>
+file_name: .github/workflows/integration.yaml
+<br>
+job: functional-test-workflow-register
