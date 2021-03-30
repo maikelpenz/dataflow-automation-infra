@@ -1,8 +1,5 @@
 # dataflow-automation-infra 
 
-> **_NOTE:_**  This README file is still WIP 
-
-<br>
 
 ## Table of Contents  
 [Summary](#summary)  
@@ -13,43 +10,59 @@
 
 ## Summary
 
-[Prefect](https://www.prefect.io/) is an open-source workflow management system that comes with many features that facilitates building, maintaining and troubleshooting data pipelines. Its [cloud solution](https://www.prefect.io/cloud/) puts a management layer on top of their framework that enables teams to schedule and troubleshoot workflows while operating under a [hybrid model](https://medium.com/the-prefect-blog/the-prefect-hybrid-model-1b70c7fd296) that guarantees that the execution layer remains on the customer side.
+[Prefect](https://www.prefect.io/) is an open-source workflow management system that comes with many features that facilitates building, maintaining and troubleshooting data pipelines. Its [cloud solution](https://www.prefect.io/cloud/) puts a management layer on top of the framework that enables teams to schedule and troubleshoot workflows while operating under a [hybrid model](https://medium.com/the-prefect-blog/the-prefect-hybrid-model-1b70c7fd296) that guarantees that the execution layer remains on the customer side.
 
-By saying that, the responsibility to *spin up* and *integrate* the execution layer with *Prefect Cloud* is all on the customer's plate, demanding a decent level of engineering effort. This project:
+By saying that, the responsibility to *spin up* and *integrate* the execution layer with *Prefect Cloud* is on the customer's plate. This project works as a starting point for teams wanting to get up and running fast to experiment and deploy workflows with Prefect. Features:
 
-#### Automates the creation of execution environments on AWS
+### Automates the creation of execution environments on AWS
 [Terraform](https://www.terraform.io/) is an open-source infrastructure as code tool used to spin up resources in the cloud. This project takes advantage of Terraform to spin up executions environments to run workflows.
 <br>
 
-#### Integrates execution environments with Prefect Cloud
-[Prefect Agent](https://docs.prefect.io/orchestration/agents/overview.html) are long running processes used to communicate customer's *execution environments* with *Prefect Cloud*. This project builds a container image to run the Prefect Agent and creates the infrastructure around it that guarantees it is fault-tolerant and can successfully authenticate to Prefect Cloud.
+### Integrates execution environments with Prefect Cloud
+[Prefect Agent](https://docs.prefect.io/orchestration/agents/overview.html) is a long running process used to communicate *execution environments* with *Prefect Cloud*. This project builds a container image to run the Prefect Agent and creates the infrastructure around it that guarantees it is fault-tolerant and can successfully authenticate to Prefect Cloud.
 <br>
 
-#### Offers an interface to register workflows
-[Github Actions](https://github.com/features/actions) is a Github feature that automates the execution of workflows in response to events. It is used to define steps that build, test, and deploy projects on any platform while Github manages the execution. 
+### Offers an interface to register workflows
+[Github Actions](https://github.com/features/actions) is a Github feature that automates the execution of workflows in response to events. It is used to define steps that build, test, and deploy projects on any platform while Github manages the pipeline execution. 
 <br>
-What makes Github Actions more interesting is that besides playing the common *CI/CD* role it also offers a marketplace where developers can reference existing **Actions** to build their workflows and also publish their own actions for other developers/repositories to consume. 
+What makes Github Actions more interesting is that besides playing the common *CI/CD* role it also offers a marketplace of custom **actions** where developers can reuse existing logic to build their workflows and also publish their own **actions** for other developers/repositories to consume. 
 <br>
-This project publishes/maintains a **custom Github Action** responsible for deploying workflows to Prefect Cloud. This **action** is available through the marketplace so other repositories can easily push their workflows to Prefect Cloud and run them inside AWS execution environments deployed by *dataflow-automation-infra*. Please [check this repository](https://github.com/maikelpenz/dataflow-sample-workflow) to see this custom action in use.
+This project maintains a *custom Github Action* responsible for deploying workflows to Prefect Cloud. Other repositories can then point to this action to easily push their workflows to Prefect Cloud and run them inside AWS execution environments deployed by *dataflow-automation-infra*. Please [check this repository](https://github.com/maikelpenz/dataflow-sample-workflow) to see this custom action in use.
 
 &nbsp;<a name="architecture"/>
 ## Architecture
 
-This section goes into the architecture and implementation details of this project
+### High level view
 
-#### High level view
+Four components are automatically deployed through the CI/CD pipeline of this repository. All steps are run across three different AWS environments (dev, test and prod)
 
-![HighLevelView](images/high_level_view.png)
+* AWS Infrastructure: cloud resources required to execute workflows
+* Prefect Agent Spin Up: this step builds the docker image where the Prefect Agent runs from and pushes it to AWS ECR
+* Prefect Project Set Up: creates the prefect project on Prefect Cloud
+* Prefect Workflow Register: Updates the Github Action responsible for registering workflows on Prefect Cloud
+
+Besides deploying the components above, the CI/CD pipeline:
+
+- Runs unit tests in *dev*
+- Runs unit tests and functional tests in *test*
+<br>
+
+![FullView](images/full_view.png)
 
 <br>
 
-**<h3>Detailed view</h3>**
+### Detailed view
+
+Currently prefect clod 
+
+There are multiple execution environment possibilities 
+Execution environments can evolve over time so what can be found here is  at the moment this repository offers ECS as the
 
 ![DetailedView](images/detailed_view.png)
 
 <br>
 
-**<h3>Deployment/Execution process</h3>**
+### How the Github Action works
 
 ![DeploymentExecutionProcess](images/deployment_execution_process.png)
 
