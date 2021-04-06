@@ -51,7 +51,7 @@ Besides deploying the components above, the CI/CD pipeline:
 
 ### Github Action - Deployment Process
 
-![DeploymentExecutionProcess](images/deployment_execution_process.png)
+![DeploymentProcess](images/deployment_process.png)
 
 <br>
 
