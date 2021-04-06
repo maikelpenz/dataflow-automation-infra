@@ -32,8 +32,6 @@ This project maintains a *custom Github Action* responsible for deploying workfl
 &nbsp;<a name="architecture"/>
 ## Architecture
 
-### High level view
-
 Four components are automatically deployed through the CI/CD pipeline of this repository. All steps are run across three different AWS environments (dev, test and prod)
 
 * AWS Infrastructure: cloud resources required to execute workflows
@@ -51,18 +49,7 @@ Besides deploying the components above, the CI/CD pipeline:
 
 <br>
 
-### Detailed view
-
-Currently prefect clod 
-
-There are multiple execution environment possibilities 
-Execution environments can evolve over time so what can be found here is  at the moment this repository offers ECS as the
-
-![DetailedView](images/detailed_view.png)
-
-<br>
-
-### How the Github Action works
+### Github Action - Deployment Process
 
 ![DeploymentExecutionProcess](images/deployment_execution_process.png)
 
