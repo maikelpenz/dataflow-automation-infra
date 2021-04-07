@@ -62,5 +62,8 @@ The idea is that `dataflow-automation-infra` is only responsible for the infrast
 <br>
 
 &nbsp;<a name="deployment"/>
-## Deployment
-TODO
+## Infrastructure Deployment
+
+These are the steps to deploy this infrastructure to your own AWS account. 
+
+## Workflow Deployment
