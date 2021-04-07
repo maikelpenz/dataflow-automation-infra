@@ -53,7 +53,9 @@ Besides deploying the components above, the CI/CD pipeline:
 
 This github action automates the registration of workflows with Prefect Cloud. Through its inputs/parameters one can configure memory/cpu and also pick an execution environment (deployed as part of this repo's infrastructure). 
 
-The idea is that *dataflow-automation-infra* is only responsible for the infrastructure and workflows are placed in one or many external repositories. The following image illustrates how a workflow named `sample_workflow` is placed on a repository named `dataflow-sample-workflow` and uses the github action to register versions for development and production environments. Once registered, the *prefect agent* listens to schedules/ad-hoc runs of this workflow and fire them to an AWS environment.
+The idea is that *dataflow-automation-infra* is only responsible for the infrastructure and workflows are placed in one or many external repositories. The following image illustrates how a workflow named `sample_workflow` is placed on a repository named `dataflow-sample-workflow` and uses the github action to register workflow versions for development and production environments. Once registered, the *prefect agent* listens to schedules/ad-hoc runs of this workflow and fire them to an AWS environment.
+
+<br>
 
 ![DeploymentProcess](images/deployment_process.png)
 
