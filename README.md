@@ -64,10 +64,17 @@ The idea is that `dataflow-automation-infra` is only responsible for the infrast
 &nbsp;<a name="deployment"/>
 ## Deployment
 
+Pre requisites:
+* AWS Account
+* Prefect Cloud Account
+* Github Account
+
 These are the steps to deploy the execution environment infrastructure to your own AWS account:
 
 1 - Manual set up of AWS resources
-    Some resources have to be manually setup before we can run the pipeline  
+    Some resources have to be manually setup before we can run the pipeline
+
+    * Set up Prefect Cloud Tokens
 
 2 - Fork *dataflow-automation-infra*
     <how>
