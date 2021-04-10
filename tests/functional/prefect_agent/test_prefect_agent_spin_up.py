@@ -98,7 +98,7 @@ def is_agent_up_prefect_cloud(pytestconfig):
             return ResourceCheckStatus.RETRY
 
 
-def test_prefect_agent_successfully():
+def test_prefect_agent_successfully(pytestconfig):
     """
     Test that we can successfully bring the prefect agent up
     """
@@ -119,8 +119,8 @@ def test_prefect_agent_successfully():
     )
 
     # Define function to wait for agent to be up on Prefect Cloud
-    def check_prefect_cloud_agent_status():
-        return is_agent_up_prefect_cloud()
+    def check_prefect_cloud_agent_status(pytestconfig):
+        return is_agent_up_prefect_cloud(pytestconfig)
 
     # Wait for agent to be up on Prefect Cloud
     is_resource_available(
