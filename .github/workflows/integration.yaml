@@ -186,7 +186,7 @@ jobs:
           --build-arg execution_role_arn_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_task_execution_role_arn }} \
           --build-arg subnets_arg=${{ steps.read_tf_outputs.outputs.vpc_public_subnets }} \
           --build-arg environment_arg=${{ env.env }} \
-          --build-arg prefect_agent_token_arg=${{ env.prefect_agent_token }} \
+          --build-arg prefect_agent_token_arg=${{ secrets.PREFECT_AGENT_TOKEN }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
