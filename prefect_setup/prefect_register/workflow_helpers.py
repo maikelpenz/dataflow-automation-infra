@@ -105,7 +105,7 @@ class WorkflowHelpers:
         self,
         environment: str,
         prefect_execution_environment: str,
-        prefect_register_token_secret_name: str,
+        prefect_workflow_register_token: str,
         workflow_cpu_configuration: int,
         workflow_memory_configuration: int,
     ) -> None:
@@ -115,8 +115,8 @@ class WorkflowHelpers:
         Parameters:
             environment [string] -- environment the workflow should be pushed to
             prefect_execution_environment [string] -- e.g: ecs_fargate, kubernetes
-            prefect_register_token_secret_name [string]
-                -- name of aws secrets manager secret where prefect register token is stored
+            prefect_workflow_register_token [string]
+                -- Prefect API token to register workflows
             workflow_cpu_configuration [int] -- e.g: 256,512,1024,2048,4096
             workflow_memory_configuration [int] -- e.g: 512,30720
         """
@@ -135,14 +135,9 @@ class WorkflowHelpers:
         # Create ECR repository
         self.create_workflow_ecr_repository(flow_name=flow_name)
 
-        # get prefect workflow register API token
-        prefect_api_token = self.prefect_helpers.get_prefect_token(
-            secret_name=prefect_register_token_secret_name
-        )
-
         try:
             # Instantiate the prefect client
-            prefect_client = Client(api_token=prefect_api_token)
+            prefect_client = Client(api_token=prefect_workflow_register_token)
 
             # Register the Workflow
             prefect_client.register(

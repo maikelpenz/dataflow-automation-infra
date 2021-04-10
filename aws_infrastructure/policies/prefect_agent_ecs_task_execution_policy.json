@@ -105,7 +105,6 @@
                 "logs:FilterLogEvents",
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
-                "secretsmanager:GetSecretValue",
                 "route53:CreateHostedZone",
                 "route53:DeleteHostedZone",
                 "route53:GetHealthCheck",

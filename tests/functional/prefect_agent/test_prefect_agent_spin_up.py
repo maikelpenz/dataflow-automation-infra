@@ -10,10 +10,10 @@ from prefect_setup.prefect_register.prefect_helpers import PrefectHelpers
 
 import boto3
 from prefect import Client
+import pytest
 
 ECS_CLIENT = boto3.client("ecs")
 ENV = "test"
-PREFECT_TOKEN_SECRET_NAME = "prefectagenttoken"
 PREFECT_HELPERS = PrefectHelpers()
 
 
@@ -54,16 +54,17 @@ def is_agent_up_ecs():
             return ResourceCheckStatus.RETRY
 
 
-def is_agent_up_prefect_cloud():
+def is_agent_up_prefect_cloud(pytestconfig):
     """
     Check if the agent is up on Prefect Cloud
     """
 
     # get prefect workflow register API token
-    prefect_api_token = PREFECT_HELPERS.get_prefect_token(secret_name=PREFECT_TOKEN_SECRET_NAME)
+    # FIXXX THIS
+    prefect_workflow_register_token = pytestconfig.getoption("prefect_workflow_register_token")
 
     # Instantiate the prefect client
-    prefect_client = Client(api_token=prefect_api_token)
+    prefect_client = Client(api_token=prefect_workflow_register_token)
 
     # query prefect cloud agents
     query = """

@@ -16,8 +16,8 @@ inputs:
   workflow_path:
     description: 'Path to the workflow in the repository'
     required: true
-  prefect_register_token_secret_name:
-    description: 'AWS Secrets manager name where prefect register token is stored'
+  prefect_workflow_register_token:
+    description: 'Prefect token to register workflows'
     required: true
   prefect_execution_environment:
     description: 'Prefect execution environment. E.g: ecs_fargate, kubernetes'
@@ -39,7 +39,7 @@ runs:
     - ${{ inputs.branch_name }}
     - ${{ inputs.commit_sha }}
     - ${{ inputs.workflow_path }}
-    - ${{ inputs.prefect_register_token_secret_name }}
+    - ${{ inputs.prefect_workflow_register_token }}
     - ${{ inputs.prefect_execution_environment }}
     - ${{ inputs.workflow_cpu_configuration }}
     - ${{ inputs.workflow_memory_configuration }}

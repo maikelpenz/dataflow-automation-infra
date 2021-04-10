@@ -16,31 +16,6 @@ class PrefectHelpers:
         """ Constructor method"""
         self.aws_conn_helpers = AwsConnHelpers()
 
-    def get_prefect_token(self, secret_name: str) -> str:
-        """
-        Get the prefect token from AWS Secrets manager
-
-        Parameters:
-            secret_name [str] -- name of the secret
-
-        Return:
-            secret [dict] -- secret value
-        """
-        secret = None
-        try:
-            get_secret_value_response = self.aws_conn_helpers.get_secrets_manager_value(secret_name)
-        except ClientError as e:
-            raise e
-        else:
-            if "SecretString" in get_secret_value_response:
-                secret = get_secret_value_response["SecretString"]
-            elif "SecretBinary" in get_secret_value_response:
-                secret = base64.b64decode(get_secret_value_response["SecretBinary"])
-            else:
-                raise Exception("Invalid secret value")
-
-        return json.loads(secret).get(secret_name)
-
     def get_prefect_aws_infrastructure(self, env: str) -> Tuple:
         """
         Get AWS infrastructure resources for a given environment
