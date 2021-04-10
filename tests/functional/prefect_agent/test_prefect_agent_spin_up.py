@@ -59,12 +59,11 @@ def is_agent_up_prefect_cloud(pytestconfig):
     Check if the agent is up on Prefect Cloud
     """
 
-    # get prefect workflow register API token
-    # FIXXX THIS
-    prefect_workflow_register_token = pytestconfig.getoption("prefect_workflow_register_token")
+    # get prefect agent API token
+    prefect_agent_token = pytestconfig.getoption("prefect_agent_token")
 
     # Instantiate the prefect client
-    prefect_client = Client(api_token=prefect_workflow_register_token)
+    prefect_client = Client(api_token=prefect_agent_token)
 
     # query prefect cloud agents
     query = """
