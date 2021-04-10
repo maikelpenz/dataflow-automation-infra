@@ -11,23 +11,9 @@ class AwsConnHelpers:
         """ Constructor method"""
         self.ecr_username = ecr_username
         self.ecr_client = boto3.client("ecr")
-        self.secrets_manager_client = boto3.client(service_name="secretsmanager")
         self.ec2_client = boto3.client("ec2")
         self.iam_resource = boto3.resource("iam")
         self.sts_client = boto3.client("sts")
-
-    def get_secrets_manager_value(self, secret_name: str) -> str:
-        """
-        Parameters:
-            secret_name [str] -- name of the secret
-
-        Return:
-            secret [dict] -- secret value
-        """
-        try:
-            return self.secrets_manager_client.get_secret_value(SecretId=secret_name)
-        except ClientError as e:
-            raise e
 
     def create_ecr_repository(self, repository_name: str) -> None:
         """

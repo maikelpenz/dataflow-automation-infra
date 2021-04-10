@@ -18,7 +18,6 @@ env:
     prefect_agent_working_dir: './prefect_setup/prefect_agent'
     agent_cpu: 512
     agent_memory: 1024
-    prefect_token_secret_name: 'prefectagenttoken'
     prefect_agent_up: 'false'
     # prefect project
     prefect_project_working_dir: './prefect_setup/prefect_project'
@@ -150,8 +149,6 @@ jobs:
           IMAGE_TAG: latest
         run: |
           cd ${{ env.prefect_agent_working_dir }}
-
-          cp ../shared/prefect_helpers.py .
           
           docker build \
           --build-arg agent_type_arg=ecs_fargate \
@@ -163,7 +160,7 @@ jobs:
           --build-arg execution_role_arn_arg=${{ steps.read_tf_outputs.outputs.agent_ecs_task_execution_role_arn }} \
           --build-arg subnets_arg=${{ steps.read_tf_outputs.outputs.vpc_public_subnets }} \
           --build-arg environment_arg=${{ env.env }} \
-          --build-arg prefect_token_secret_name_arg=${{ env.prefect_token_secret_name }} \
+          --build-arg prefect_agent_token_arg=${{ env.prefect_agent_token }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -194,4 +191,4 @@ jobs:
 
           python3 prefect_setup/prefect_project_setup.py \
             --environment=${{ env.env }} \
-            --prefect_token_secret_name=${{ env.prefect_token_secret_name }}
+            --prefect_agent_token=${{ secrets.PREFECT_AGENT_TOKEN }}

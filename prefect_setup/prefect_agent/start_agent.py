@@ -3,10 +3,6 @@ import os
 import logging
 import sys
 
-sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
-from prefect_setup.shared.prefect_helpers import get_prefect_token
-
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -44,7 +40,7 @@ def get_agent_definition(agent_type: str, **agent_args: str) -> object:
         raise ValueError(f"'{agent_type}' is not a valid agent type")
 
 
-def start_agent(agent: object, prefect_token_secret_name: str):
+def start_agent(agent: object, prefect_agent_token: str):
     """
     Starts the prefect agent
 
@@ -59,8 +55,8 @@ def start_agent(agent: object, prefect_token_secret_name: str):
         agent.start()
     except AuthorizationError:
         error_message = (
-            "Invalid API token provided. Check that the secret"
-            f" '{prefect_token_secret_name}' is set on AWS"
+            "Invalid API token provided. Check that the secret "
+            "PREFECT_AGENT_TOKEN is set on the Github repository configuration"
         )
         logger.error(error_message)
         raise AuthorizationError(error_message)
@@ -77,7 +73,7 @@ if __name__ == "__main__":
     parser.add_argument("--execution_role_arn", type=str, required=False, default=False)
     parser.add_argument("--subnets", type=str, required=False, default=False)
     parser.add_argument("--environment", type=str, required=False, default=False)
-    parser.add_argument("--prefect_token_secret_name", type=str, required=False, default=False)
+    parser.add_argument("--prefect_agent_token", type=str, required=False, default=False)
 
     args, unknown = parser.parse_known_args()
     agent_type = args.agent_type
@@ -89,12 +85,10 @@ if __name__ == "__main__":
     execution_role_arn = args.execution_role_arn
     subnets = args.subnets
     environment = args.environment
-    prefect_token_secret_name = args.prefect_token_secret_name
+    prefect_agent_token = args.prefect_agent_token
 
     # Set authentication to Prefect Cloud
-    os.environ["PREFECT__CLOUD__AGENT__AUTH_TOKEN"] = get_prefect_token(
-        secret_name=prefect_token_secret_name
-    )
+    os.environ["PREFECT__CLOUD__AGENT__AUTH_TOKEN"] = prefect_agent_token
 
     # Get the agent definition
     agent = get_agent_definition(
@@ -109,4 +103,4 @@ if __name__ == "__main__":
         execution_role_arn=execution_role_arn,
     )
     # Start the agent
-    start_agent(agent, prefect_token_secret_name)
+    start_agent(agent, prefect_agent_token)

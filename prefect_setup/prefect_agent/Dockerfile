@@ -4,10 +4,8 @@ FROM prefecthq/prefect
 RUN pip3 install boto3
 
 # Copy required agent startup files
-COPY prefect_helpers.py /prefect_setup/shared/prefect_helpers.py
 COPY start_agent.py /prefect_setup/start_agent.py
 RUN touch /prefect_setup/__init__.py
-RUN touch /prefect_setup/shared/__init__.py
 
 # Agent Configuration variables
 ARG agent_type_arg=None
@@ -40,8 +38,8 @@ ENV subnets_env=$subnets_arg
 ARG environment_arg=None
 ENV environment_env=$environment_arg
 
-ARG prefect_token_secret_name_arg=None
-ENV prefect_token_secret_name_env=$prefect_token_secret_name_arg
+ARG prefect_agent_token_arg=None
+ENV prefect_agent_token_env=$prefect_agent_token_arg
 
 # Set to start the agent when image comes up 
 ENTRYPOINT python3 /prefect_setup/start_agent.py \
@@ -54,4 +52,4 @@ ENTRYPOINT python3 /prefect_setup/start_agent.py \
     --execution_role_arn=$execution_role_arn_env \
     --subnets=$subnets_env \
     --environment=$environment_env \
-    --prefect_token_secret_name=$prefect_token_secret_name_env
+    --prefect_agent_token=$prefect_agent_token_env

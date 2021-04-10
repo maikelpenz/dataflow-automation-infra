@@ -7,31 +7,6 @@ ENVIRONMENT = "test"
 prefect_helpers = PrefectHelpers()
 
 
-def test_get_prefect_token_successful(mocker):
-    """
-    Test if we can successfully retrieve the token
-    """
-    mocker.patch(
-        "aws_conn_helpers.AwsConnHelpers.get_secrets_manager_value",
-        return_value={
-            "SecretString": '{"MyPrefectPytestToken":"tHiSiStHeValuE"}',
-        },
-    )
-    assert prefect_helpers.get_prefect_token("MyPrefectPytestToken") == "tHiSiStHeValuE"
-
-
-def test_get_prefect_token_failed(mocker):
-    """
-    Test if we cannot successfully retrieve the token
-    """
-    mocker.patch(
-        "aws_conn_helpers.AwsConnHelpers.get_secrets_manager_value",
-        return_value="tHiSiStHeValuE",
-    )
-    with pytest.raises(Exception, match="Invalid secret value"):
-        prefect_helpers.get_prefect_token("MyPrefectPytestToken")
-
-
 def test_get_prefect_aws_infrastructure(mocker):
     """
     Test get prefect AWS infrastructure to register workflow

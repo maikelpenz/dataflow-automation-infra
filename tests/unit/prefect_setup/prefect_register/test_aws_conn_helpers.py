@@ -5,15 +5,6 @@ ENVIRONMENT = "test"
 aws_conn_helpers = AwsConnHelpers()
 
 
-def test_get_secrets_manager_value_no_credentials():
-    """
-    Validate it fails to connect to AWS and not on other parts of the function
-    """
-    secret_name = "MySecret"
-    with pytest.raises(Exception, match="Unable to locate credentials"):
-        aws_conn_helpers.get_secrets_manager_value(secret_name)
-
-
 def test_create_ecr_repository_no_credentials():
     """
     Validate it fails to connect to AWS and not on other parts of the function

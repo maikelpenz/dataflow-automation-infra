@@ -93,9 +93,5 @@ def test_register_workflow(mocker):
         "prefect_setup.prefect_register.workflow_helpers.WorkflowHelpers.create_workflow_ecr_repository",
         return_value=None,
     )
-    mocker.patch(
-        "prefect_helpers.PrefectHelpers.get_prefect_token",
-        return_value="PrefectToken",
-    )
     with pytest.raises(Exception, match="'NoneType' object has no attribute 'flow'"):
         workflow_helpers.register_workflow("test", "ecs_fargate", "PrefectTokenSecret", 512, 1024)

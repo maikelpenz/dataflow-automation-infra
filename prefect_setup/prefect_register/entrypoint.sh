@@ -6,7 +6,7 @@ git_url=$2
 branch_name=$3
 commit_sha=$4
 workflow_path=$5
-prefect_register_token_secret_name=$6
+prefect_workflow_register_token=$6
 prefect_execution_environment=$7
 workflow_cpu_configuration=$8
 workflow_memory_configuration=$9
@@ -40,7 +40,7 @@ pip3 install boto3
 # register workflow
 python3 /tmp/$workflow_path/workflow_register.py \
  --env=$env \
- --prefect_register_token_secret_name=$prefect_register_token_secret_name \
+ --prefect_workflow_register_token=$prefect_workflow_register_token \
  --prefect_execution_environment=$prefect_execution_environment \
  --workflow_cpu_configuration=$workflow_cpu_configuration \
  --workflow_memory_configuration=$workflow_memory_configuration

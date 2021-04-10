@@ -22,7 +22,7 @@ with:
   branch_name: ${{ steps.action_vars.outputs.branch_name }}
   commit_sha: ${{ steps.action_vars.outputs.commit_sha }}
   workflow_path: 'workflow'
-  prefect_register_token_secret_name: 'prefectregistertoken'
+  prefect_workflow_register_token: ${{ secrets.PREFECT_WORKFLOW_REGISTER_TOKEN }}
   prefect_execution_environment: 'ecs_fargate'
   workflow_cpu_configuration: 512
   workflow_memory_configuration: 1024

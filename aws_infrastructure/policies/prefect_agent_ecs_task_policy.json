@@ -7,7 +7,6 @@
                 "ecr:*",
                 "ecs:*",
                 "logs:*",
-                "secretsmanager:*",
                 "iam:PassRole",
                 "ec2:DescribeVpcs",
                 "ec2:DescribeSubnets"

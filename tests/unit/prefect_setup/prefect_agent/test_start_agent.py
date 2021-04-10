@@ -33,7 +33,7 @@ def test_start_agent_invalid_token(ecs_fargate_agent_definition):
     with mock.patch.dict(os.environ, {"PREFECT__CLOUD__AGENT__AUTH_TOKEN": test_token_name}):
         with pytest.raises(
             AuthorizationError,
-            match=f"Invalid API token provided. Check that the secret"
-            f" '{test_token_name}' is set on AWS",
+            match="Invalid API token provided. Check that the secret "
+            "PREFECT_AGENT_TOKEN is set on the Github repository configuration",
         ):
             start_agent.start_agent(ecs_fargate_agent_definition, test_token_name)
