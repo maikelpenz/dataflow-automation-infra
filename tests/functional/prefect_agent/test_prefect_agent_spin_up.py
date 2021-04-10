@@ -124,7 +124,7 @@ def test_prefect_agent_successfully(pytestconfig):
 
     # Wait for agent to be up on Prefect Cloud
     is_resource_available(
-        check_function=check_prefect_cloud_agent_status,
+        check_function=check_prefect_cloud_agent_status(pytestconfig),
         wait_time_sec=60,
         backoff_rate=1,
         max_attempts=3,

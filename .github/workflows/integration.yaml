@@ -247,7 +247,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.aws_region }}
         run: |
           pipenv install --dev
-          pipenv run pytest --prefect_agent_token ${{ secrets.PREFECT_AGENT_TOKEN }} ${{ env.function_tests_dir }}/prefect_agent 
+          pipenv run pytest --prefect_agent_token ${{ secrets.PREFECT_AGENT_TOKEN }} ${{ env.function_tests_dir }}/prefect_agent/test_prefect_agent_spin_up.py 
 
   functional-test-workflow-register:
     name: Func Test - Workflow Register
