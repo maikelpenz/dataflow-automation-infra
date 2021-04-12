@@ -1,5 +1,6 @@
 # dataflow-automation-infra 
 
+![Header](images/header.png)
 
 ## Table of Contents  
 [Summary](#summary)  
@@ -119,7 +120,7 @@ The last thing to do is to enable Github Actions for this forked repository. By 
 - Using a web browser go to your forked repository on Github. On the top menu, click on `Actions`
 - Click on the green button `I understand my workflows..` 
 
-#### 5 - Command line tool: Create branh to trigger the deployment pipeline
+#### 5 - Command line tool: Create branch to trigger the deployment pipeline
 With the repository forked and the credentials configured we now need to create a branch to push the infrastructure to _dev_, _test_ and _production_ environments.
 
 The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow branching pattern](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow):
