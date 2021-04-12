@@ -105,6 +105,11 @@ AWS_SECRET_ACCESS_KEY: <from step 1 above> <br>
 PREFECT_AGENT_TOKEN: <from step 2 above> <br>
 PREFECT_WORKFLOW_REGISTER_TOKEN: <from step 2 above>
 
+The last thing to do is to enable Github Actions for this forked repository. By default it comes disabled to avoid running the actions from the main repository inadvertently.
+
+- Using a web browser go to your forked repository on Github. On the top menu, click on `Actions`
+- Click on the green button `I understand my workflows..` 
+
 #### 5 - Command line tool: Create branches to trigger the deployment pipeline
 With the repository forked and the credentials configured we now need to create a branch to push the infrastructure to _dev_, _test_ and _production_ environments.
 
@@ -113,6 +118,17 @@ The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow 
 *develop* is an integration branch for new features
 *feature branches* are created to introduce new features and first merged into *develop* before going to *master*   
 
-- Using your command-line tool of preference go to the cloned repository (from step 3) directory.
-- checkout *develop*
-    ```git checkout develop```
+- Using your command-line tool of preference go to the cloned repository (from step 3) directory. 
+- checkout *develop*: ```git checkout develop```
+- create and push a *feature branch*: <br> 
+    ```
+        git checkout -b feature/deploy_infrastructure
+        git push -u origin feature/deploy_infrastructure
+    ```
+- make a change a file (README.md for example) so you have something to commit
+- commit and push
+    ```
+        git add .
+        git commit -m "deploying infra"
+        git push
+    ```
