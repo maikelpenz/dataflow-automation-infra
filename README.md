@@ -80,7 +80,6 @@ The Github CI/CD pipeline must be able to communicate with your AWS Account to d
 - If you don't have a user created please click on `Add User`
 - On the _Security credentials_ tab click on `Create access key`
 - Copy both the Access Key and the Secret Access Key somewhere safe
-<br>
 
 #### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
 Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud to spin up the agent and also to register workflows.
@@ -88,6 +87,5 @@ Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud 
 - Log into Prefect Cloud and under the top menu select `team` and then `Service Accounts`
 - Click on `Add Service Account` and put a name to your group of API keys. E.g: ApisGroup
 - use the `Create API Key` button to create 2 API keys: _PrefectAgent_ and _WorkflowRegister_. Make sure you copy the keys.
-<br>
 
 #### 3 - Github: Fork *dataflow-automation-infra*
