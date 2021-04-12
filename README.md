@@ -72,7 +72,7 @@ Pre requisites:
 These are the steps to deploy the execution environment infrastructure to your own AWS account:
 <br>
 
-#### 1 - AWS: create access Keys for Github CI/CD pipeline
+#### 1 - AWS: create access keys to be used by the Github CI/CD pipeline
 The Github CI/CD pipeline must be able to communicate with your AWS Account to deploy resources. Here we create keys to grant the right access.
 
 - Log into your AWS account
@@ -89,3 +89,5 @@ Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud 
 - use the `Create API Key` button to create 2 API keys: _PrefectAgent_ and _WorkflowRegister_. Make sure you copy the keys.
 
 #### 3 - Github: Fork *dataflow-automation-infra*
+
+- Fork and Clone this repository following the instructions [in this link](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
