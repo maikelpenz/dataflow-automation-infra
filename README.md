@@ -79,7 +79,7 @@ The Github CI/CD pipeline must be able to communicate with your AWS Account to d
 - Go to IAM > Users
 - If you don't have a user created please click on `Add User`
 - On the _Security credentials_ tab click on `Create access key`
-- Copy both the Access Key and the Secret Access Key somewhere safe
+- Copy both the _Access Key_ and the _Secret Access Key_ somewhere safe
 
 #### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
 Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud to spin up the agent and also to register workflows.
@@ -90,4 +90,20 @@ Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud 
 
 #### 3 - Github: Fork *dataflow-automation-infra*
 
-- Fork and Clone this repository following the instructions [in this link](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
+- Fork and Clone this repository following the instructions [from this link](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
+
+#### 4 - Github: Configure *YOUR_GITHUB_ACCOUNT/dataflow-automation-infra* secrets
+On your forked version of *dataflow-automation-infra* we will now configure secret variables so the CI/CD pipeline can connect to AWS and Prefect Cloud.
+Credentials configured in this step uses the keys configured on steps 1 and 2 above.
+
+- Using a web browser go to your forked repository on Github. On the top menu, click on `Settings`
+- One the left side menu click on `Secrets`
+- Create the following 4 secrets (names are self explanatory):
+
+AWS_ACCESS_KEY_ID: <from step 1 above>
+AWS_SECRET_ACCESS_KEY: <from step 1 above>
+PREFECT_AGENT_TOKEN: <from step 2 above>
+PREFECT_WORKFLOW_REGISTER_TOKEN: <from step 2 above>
+
+#### 5 - Command line tool: Create branches to trigger the deployment pipeline
+With the repository forked and credentials configured we can now create a branch and push it to _dev_, _test_ and _production_ environments.
