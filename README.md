@@ -100,9 +100,9 @@ Credentials configured in this step uses the keys configured on steps 1 and 2 ab
 - One the left side menu click on `Secrets`
 - Create the following 4 secrets (names are self explanatory):
 
-AWS_ACCESS_KEY_ID: <from step 1 above> 
-AWS_SECRET_ACCESS_KEY: <from step 1 above> 
-PREFECT_AGENT_TOKEN: <from step 2 above> 
+AWS_ACCESS_KEY_ID: <from step 1 above> <br>
+AWS_SECRET_ACCESS_KEY: <from step 1 above> <br>
+PREFECT_AGENT_TOKEN: <from step 2 above> <br>
 PREFECT_WORKFLOW_REGISTER_TOKEN: <from step 2 above>
 
 #### 5 - Command line tool: Create branches to trigger the deployment pipeline
