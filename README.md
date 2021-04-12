@@ -71,7 +71,7 @@ Pre requisites:
 
 These are the steps to deploy the execution environment infrastructure to your own AWS account:
 
-### Prefect Cloud: create `agent` and `workflow register` API tokens 
+#### Prefect Cloud: create `agent` and `workflow register` API tokens 
 
 1 - Manual set up of AWS resources
     Some resources have to be manually setup before we can run the pipeline
