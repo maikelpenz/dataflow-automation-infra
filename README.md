@@ -135,17 +135,17 @@ The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow 
         git push -u origin feature/deploy_infrastructure
     ```
 - update terraform state and artifacts bucket names (from step 1b above):
-    Update the following two lines 
-    ```
-    tf_artifacts_bucket: `<account-number>-dataflow-automation-infra-artifacts`
-    tf_state_bucket: `<account-number>-dataflow-automation-infra-tf-state`
-    ```
-    on these 3 files:
+    On each one of these 3 files:
     ```
     .github/workflows/development.yaml
     .github/workflows/integration.yaml
     .github/workflows/production.yaml
     ````
+    Update the following two lines 
+    ```
+    tf_artifacts_bucket: `<account-number>-dataflow-automation-infra-artifacts`
+    tf_state_bucket: `<account-number>-dataflow-automation-infra-tf-state`
+    ```
 
 - commit and push
     ```
