@@ -134,7 +134,7 @@ The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow 
         git checkout -b feature/deploy_infrastructure
         git push -u origin feature/deploy_infrastructure
     ```
-- update terraform state and artifacts bucket names (from step 1b above):
+- update terraform state and artifacts bucket names (from step 1b above).
     On each one of these 3 files:
     ```
     .github/workflows/development.yaml
