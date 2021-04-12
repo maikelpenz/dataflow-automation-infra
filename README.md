@@ -162,3 +162,5 @@ As part of the _dev_ CI/CD pipeline, the last step registers a workflow named *d
 - Log into Prefect Cloud, find your workflow under the *dev_dataflow_automation* project. Trigger a `Quick run`
 - Switch to AWS, enter AWS ECS, watch a pending task beeing created under the cluster *dev_dataflow_automation_workflows*
 - The workflow should succeed. If that is the case, you just proved the dev environment is working :tada:
+
+![DevWorking](images/dev_working.png)
