@@ -137,14 +137,14 @@ The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow 
 - update terraform state and artifacts bucket names (from step 1b above).
     On each one of these 3 files:
     ```
-    .github/workflows/development.yaml
-    .github/workflows/integration.yaml
-    .github/workflows/production.yaml
+        .github/workflows/development.yaml
+        .github/workflows/integration.yaml
+        .github/workflows/production.yaml
     ````
     Update the following two lines 
     ```
-    tf_artifacts_bucket: `<account-number>-dataflow-automation-infra-artifacts`
-    tf_state_bucket: `<account-number>-dataflow-automation-infra-tf-state`
+        tf_artifacts_bucket: `<account-number>-dataflow-automation-infra-artifacts`
+        tf_state_bucket: `<account-number>-dataflow-automation-infra-tf-state`
     ```
 
 - commit and push
@@ -164,3 +164,26 @@ As part of the _dev_ CI/CD pipeline, the last step registers a workflow named *d
 - The workflow should succeed. If that is the case, you just proved the dev environment is working :tada:
 
 ![DevWorking](images/dev_working.png)
+
+#### 7 - Deploying to test and production
+When merging your *feature branch* to *develop*, the *test* pipeline will be triggered to validate everything is working.
+When merging *develop* into *master*, the *production* pipeline will deploy the resources to production.
+This setup uses a single AWS account, creating all resources with *dev*, *test* and *prod* prefixes to differentiate the environments.
+For commercial use I suggest extending this repository to use multiple aws accounts.
+
+- Merge the *feature branch* into *develop*
+    ```
+        git checkout develop
+        git merge feature/deploy_infrastructure
+        git push
+        git branch -d feature/deploy_infrastructure
+    ```
+    Wait for the *Integration* pipeline to finish.
+
+- Merge *develop* into *master*
+    ```
+        git checkout master
+        git merge develop
+        git push
+    ```
+    IMPORTANT: there is a setting on each workflow file (inside .github/workflows) named *prefect_agent_up*. This setting defines if the agent will be up in this environment. By default *production* is set to *false* (cost reasons :moneybag:), so no agent will be created. If you want to have your production environment up, create a branch, update this setting to *true*, and merge it.
