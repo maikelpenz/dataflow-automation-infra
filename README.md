@@ -70,15 +70,24 @@ Pre requisites:
 * Github Account
 
 These are the steps to deploy the execution environment infrastructure to your own AWS account:
+<br>
 
-#### 1 - Prefect Cloud: create `agent` and `workflow register` API tokens 
+#### 1 - AWS: create access Keys for Github CI/CD pipeline
+The Github CI/CD pipeline must be able to communicate with your AWS Account to deploy resources. Here we create keys to grant the right access.
+
+- Log into your AWS account
+- Go to IAM > Users
+- If you don't have a user created please click on `Add User`
+- On the _Security credentials_ tab click on `Create access key`
+- Copy both the Access Key and the Secret Access Key somewhere safe
+<br>
+
+#### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
 Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud to spin up the agent and also to register workflows.
 
 - Log into Prefect Cloud and under the top menu select `team` and then `Service Accounts`
 - Click on `Add Service Account` and put a name to your group of API keys. E.g: ApisGroup
-- use the `Create API Key` button to create 2 API keys: `PrefectAgent` and `WorkflowRegister`. Make sure you copy the keys.
+- use the `Create API Key` button to create 2 API keys: _PrefectAgent_ and _WorkflowRegister_. Make sure you copy the keys.
+<br>
 
-2 - Fork *dataflow-automation-infra*
-    <how>
-
-3 - Update parameters
+#### 3 - Github: Fork *dataflow-automation-infra*
