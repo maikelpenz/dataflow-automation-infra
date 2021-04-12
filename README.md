@@ -86,7 +86,7 @@ The Github CI/CD pipeline must be able to communicate with your AWS Account to d
 b) create S3 buckets for terraform state and terraform artifacts. On AWS, go to S3 and create 2 buckets. 
 Names must be globally unique. E.g:
 
-`<account-number>-dataflow-automation-infra-artifacts`
+`<account-number>-dataflow-automation-infra-artifacts` <br>
 `<account-number>-dataflow-automation-infra-tf-state`
 
 
@@ -119,7 +119,7 @@ The last thing to do is to enable Github Actions for this forked repository. By 
 - Using a web browser go to your forked repository on Github. On the top menu, click on `Actions`
 - Click on the green button `I understand my workflows..` 
 
-#### 5 - Command line tool: Create branches to trigger the deployment pipeline
+#### 5 - Command line tool: Create branh to trigger the deployment pipeline
 With the repository forked and the credentials configured we now need to create a branch to push the infrastructure to _dev_, _test_ and _production_ environments.
 
 The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow branching pattern](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow):
@@ -127,14 +127,26 @@ The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow 
 *develop* is an integration branch for new features
 *feature branches* are created to introduce new features and first merged into *develop* before going to *master*   
 
-- Using your command-line tool of preference go to the cloned repository (from step 3) directory. 
+- using your command-line tool of preference go to the cloned repository (from step 3) directory. 
 - checkout *develop*: ```git checkout develop```
 - create and push a *feature branch*: <br> 
     ```
         git checkout -b feature/deploy_infrastructure
         git push -u origin feature/deploy_infrastructure
     ```
-- make a change a file (README.md for example) so you have something to commit
+- update terraform state and artifacts bucket names (from step 1b above):
+    Update the following two lines 
+    ```
+    tf_artifacts_bucket: `<account-number>-dataflow-automation-infra-artifacts`
+    tf_state_bucket: `<account-number>-dataflow-automation-infra-tf-state`
+    ```
+    on these 3 files:
+    ```
+    .github/workflows/development.yaml
+    .github/workflows/integration.yaml
+    .github/workflows/production.yaml
+    ````
+
 - commit and push
     ```
         git add .
