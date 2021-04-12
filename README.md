@@ -88,7 +88,7 @@ Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud 
 - Click on `Add Service Account` and put a name to your group of API keys. E.g: ApisGroup
 - use the `Create API Key` button to create 2 API keys: _PrefectAgent_ and _WorkflowRegister_. Make sure you copy the keys.
 
-#### 3 - Github: Fork *dataflow-automation-infra*
+#### 3 - Github: Fork and Clone forked *dataflow-automation-infra*
 
 - Fork and Clone this repository following the instructions [from this link](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
 
@@ -106,4 +106,13 @@ PREFECT_AGENT_TOKEN: <from step 2 above> <br>
 PREFECT_WORKFLOW_REGISTER_TOKEN: <from step 2 above>
 
 #### 5 - Command line tool: Create branches to trigger the deployment pipeline
-With the repository forked and credentials configured we can now create a branch and push it to _dev_, _test_ and _production_ environments.
+With the repository forked and the credentials configured we now need to create a branch to push the infrastructure to _dev_, _test_ and _production_ environments.
+
+The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow branching pattern](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow):
+*master* is the main branch
+*develop* is an integration branch for new features
+*feature branches* are created to introduce new features and first merged into *develop* before going to *master*   
+
+- Using your command-line tool of preference go to the cloned repository (from step 3) directory.
+- checkout *develop*
+    ```git checkout develop```
