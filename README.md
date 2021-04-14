@@ -42,8 +42,6 @@ Four components are automatically deployed through the CI/CD pipeline of this re
 * Prefect Project Set Up: creates the prefect project on Prefect Cloud
 * Prefect Workflow Register: Updates/maintains the Github Action responsible for registering workflows to Prefect Cloud
 
-<br>
-
 ![FullView](images/full_view.png)
 
 <br>
