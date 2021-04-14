@@ -131,23 +131,23 @@ With the repository forked and the credentials configured we now need to create 
 The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow branching pattern](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow): <br>
 *master* is the main branch <br>
 *develop* is an integration branch for new features <br>
-*feature branches* are created to introduce new features and first merged into *develop* before going to *master*   
+*feature branches* are created from *develop* to introduce new features. The branch first gets merged into *develop* before develop merges into *master*
 
-- using your command-line tool of preference go to the cloned repository (from step 3) directory. 
+- using your command-line tool of preference go to the cloned repository directory (from step 3). 
 - checkout *develop*: ```git checkout develop```
 - create and push a *feature branch*: <br> 
     ```
         git checkout -b feature/deploy_infrastructure
         git push -u origin feature/deploy_infrastructure
     ```
-- update terraform state and artifacts bucket names (from step 1b above).
+- on your local copy of your forked repository, update terraform state and artifacts bucket names (from step 1b above).
     On each one of these 3 files:
     ```
         .github/workflows/development.yaml
         .github/workflows/integration.yaml
         .github/workflows/production.yaml
     ````
-    Update the following two lines 
+    Update the following two lines on each of the three files above
     ```
         tf_artifacts_bucket: `<account-number>-dataflow-automation-infra-artifacts`
         tf_state_bucket: `<account-number>-dataflow-automation-infra-tf-state`
@@ -162,16 +162,16 @@ The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow 
 
 - Using a web browser go to your forked repository on Github. On the top menu, click on `Actions`. You should see the github action for development run successfully from end-to-end.
 
-#### 6 - Prefect Cloud and AWS: testing the deployed infrastructure
+### 6 - Prefect Cloud and AWS: testing the deployed infrastructure
 As part of the _dev_ CI/CD pipeline, the last step registers a workflow named *dev_functional_workflow* to Prefect Cloud.
 
 - Log into Prefect Cloud, find your workflow under the *dev_dataflow_automation* project. Trigger a `Quick run`
-- Switch to AWS, enter AWS ECS, watch a pending task beeing created under the cluster *dev_dataflow_automation_workflows*
-- The workflow should succeed. If that is the case, you just proved the dev environment is working :tada:
+- Switch to AWS, enter the *ECS* service and you will see a pending task being created under the *dev_dataflow_automation_workflows* cluster
+- The workflow should succeed. If that is the case, you just confirmed the dev environment is working :tada:
 
 ![DevWorking](images/dev_working.png)
 
-#### 7 - Deploying to test and production
+### 7 - Deploying to test and production
 When merging your *feature branch* to *develop*, the *test* pipeline will be triggered to validate everything is working.
 When merging *develop* into *master*, the *production* pipeline will deploy the resources to production.
 This setup uses a single AWS account, creating all resources with *dev*, *test* and *prod* prefixes to differentiate the environments.
