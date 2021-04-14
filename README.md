@@ -30,7 +30,7 @@ By saying that, the responsibility to *spin up* and *integrate* the execution la
 What makes Github Actions more interesting is that besides configuring and running pipelines it also offers a [marketplace](https://github.com/marketplace) of custom *actions* where developers [publish their own actions](https://docs.github.com/en/actions/creating-actions) so other developers/repositories can consume them. 
 <br>
 <br>
-This project maintains a *custom Github Action* responsible for deploying workflows to Prefect Cloud. Other repositories can then point to this action to easily push their workflows to Prefect Cloud and run them inside AWS execution environments deployed by *dataflow-automation-infra*. Please [check this repository](https://github.com/maikelpenz/dataflow-sample-workflow) to see this custom action in use.
+This project maintains a custom Github Action responsible for **deploying workflows to Prefect Cloud**. Other repositories can then point to this action to easily push their workflows to Prefect Cloud and run them inside AWS execution environments deployed by *dataflow-automation-infra*. Please [check this repository](https://github.com/maikelpenz/dataflow-sample-workflow) to see this custom action in use.
 
 &nbsp;<a name="architecture"/>
 ## Architecture
