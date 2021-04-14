@@ -6,6 +6,7 @@
 [Summary](#summary)  
 [Architecture](#architecture)  
 [Infrastructure Deployment](#deployment)  
+[Registering Workflows](#registeringworkflows)  
 <a name="summary"/>
 <br>
 
@@ -193,3 +194,6 @@ For commercial use I suggest extending this repository to use multiple aws accou
         git push
     ```
     IMPORTANT: there is a setting on each workflow file (inside .github/workflows) named *prefect_agent_up*. This setting defines if the agent will be up in this environment. By default *production* is set to *false* (cost reasons :moneybag:), so no agent will be created. If you want to have your production environment up, create a branch, update this setting to *true*, and merge it.
+
+&nbsp;<a name="registeringworkflows"/>
+## Registering Workflows
