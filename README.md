@@ -209,4 +209,4 @@ For commercial use I suggest extending this repository to use multiple aws accou
 Registering workflows using the *Workflow Register Github Action* requires a Github action pipeline. <br>
 However, as already mentioned above, I suggest using a separate repository (or repositories) to deploy them.
 
-[This repository](https://github.com/maikelpenz/dataflow-sample-workflow) is a working example. Please go through its README file to fully understand the configuration and reproduce [on your own](https://docs.github.com/en/github/getting-started-with-github/create-a-repo) *workflows repository*.
+[This repository](https://github.com/maikelpenz/dataflow-sample-workflow) is a working example. Please go through its README file to fully understand the configuration and reproduce [on your own repository](https://docs.github.com/en/github/getting-started-with-github/create-a-repo).
