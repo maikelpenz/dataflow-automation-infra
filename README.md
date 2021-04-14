@@ -75,10 +75,13 @@ The idea is that *dataflow-automation-infra* is only responsible for the infrast
 &nbsp;<a name="deployment"/>
 ## Deployment
 
+This section works as a guide to deploy the project's infrastructure to your own environment. 
+By the end of it you will be able to register and execute workflows on your Prefect Cloud and AWS accounts, respectivelly.  
+
 Pre requisites:
-* AWS Account
-* Prefect Cloud Account
-* Github Account
+* [AWS Account](https://aws.amazon.com/free/)
+* [Prefect Cloud Account](https://universal.prefect.io/signin/register)
+* [Github Account](https://github.com/join_next)
 
 These are the steps to deploy the execution environment infrastructure to your own AWS account:
 <br>
