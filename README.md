@@ -91,7 +91,7 @@ a) create IAM access keys to be used by the Github CI/CD pipeline to authenticat
 
 b) create S3 buckets to store Terraform state and artifacts. These buckets are used as part of the deployment process. 
 
-- On AWS, go to S3 and create 2 buckets. Names must be globally unique. E.g:
+- On AWS, go to the *S3* service and create 2 buckets. Names must be globally unique. E.g:
 
 `<account-number>-dataflow-automation-infra-artifacts` <br>
 `<account-number>-dataflow-automation-infra-tf-state`
@@ -99,15 +99,15 @@ b) create S3 buckets to store Terraform state and artifacts. These buckets are u
 ### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
 Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud to spin up the agent and also to register workflows.
 
-- Log into Prefect Cloud and under the top menu select `team` and then `Service Accounts`
+- Log into Prefect Cloud and on the top menu select `team` and then `Service Accounts`
 - Click on `Add Service Account` and put a name to your group of API keys. E.g: ApisGroup
-- use the `Create API Key` button to create 2 API keys: _PrefectAgent_ and _WorkflowRegister_. Make sure you copy the keys.
+- use the `Create API Key` button to create 2 API keys: _PrefectAgent_ and _WorkflowRegister_. Make sure you copy the keys somewhere safe.
 
-#### 3 - Github: Fork and Clone forked *dataflow-automation-infra*
+### 3 - Github: Fork and Clone forked *dataflow-automation-infra*
 
 - Fork and Clone this repository following the instructions [from this link](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
 
-#### 4 - Github: Configure *YOUR_GITHUB_ACCOUNT/dataflow-automation-infra* secrets
+### 4 - Github: Configure *YOUR_GITHUB_ACCOUNT/dataflow-automation-infra* secrets
 On your forked version of *dataflow-automation-infra* we will now configure secret variables so the CI/CD pipeline can connect to AWS and Prefect Cloud.
 Credentials configured in this step uses the keys configured on steps 1 and 2 above.
 
@@ -125,12 +125,12 @@ The last thing to do is to enable Github Actions for this forked repository. By 
 - Using a web browser go to your forked repository on Github. On the top menu, click on `Actions`
 - Click on the green button `I understand my workflows..` 
 
-#### 5 - Command line tool: Create branch to trigger the deployment pipeline
+### 5 - Command line tool: Create branch to trigger the deployment pipeline
 With the repository forked and the credentials configured we now need to create a branch to push the infrastructure to _dev_, _test_ and _production_ environments.
 
-The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow branching pattern](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow):
-*master* is the main branch
-*develop* is an integration branch for new features
+The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow branching pattern](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow): <br>
+*master* is the main branch <br>
+*develop* is an integration branch for new features <br>
 *feature branches* are created to introduce new features and first merged into *develop* before going to *master*   
 
 - using your command-line tool of preference go to the cloned repository (from step 3) directory. 
