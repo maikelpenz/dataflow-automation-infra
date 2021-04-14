@@ -98,6 +98,9 @@ b) create S3 buckets to store Terraform state and artifacts. These buckets are u
 `<account-number>-dataflow-automation-infra-tf-state`
 
 ### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
+
+Pre requisite: Prefect Cloud Account
+
 Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud to spin up the agent and also to register workflows.
 
 - Log into Prefect Cloud and on the top menu select `team` and then `Service Accounts`
@@ -106,9 +109,14 @@ Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud 
 
 ### 3 - Github: Fork and Clone forked *dataflow-automation-infra*
 
+Pre requisite: Github Account
+
 - Fork and Clone this repository following the instructions [from this link](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
 
 ### 4 - Github: Configure *YOUR_GITHUB_ACCOUNT/dataflow-automation-infra* secrets
+
+Pre requisite: Github Account
+
 On your forked version of *dataflow-automation-infra* we will now configure secret variables so the CI/CD pipeline can connect to AWS and Prefect Cloud.
 Credentials configured in this step uses the keys configured on steps 1 and 2 above.
 
@@ -127,6 +135,7 @@ The last thing to do is to enable Github Actions for this forked repository. By 
 - Click on the green button `I understand my workflows..` 
 
 ### 5 - Command line tool: Create branch to trigger the deployment pipeline
+
 With the repository forked and the credentials configured we now need to create a branch to push the infrastructure to _dev_, _test_ and _production_ environments.
 
 The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow branching pattern](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow): <br>
@@ -197,3 +206,7 @@ For commercial use I suggest extending this repository to use multiple aws accou
 
 &nbsp;<a name="registeringworkflows"/>
 ## Registering Workflows
+To register workflows using the *Workflow Register Github Action* we need to reference it through a Github action pipeline.
+This repository already references the *action* when running the functional tests (see .github/workflows/integration.yaml, step *functional-test-workflow-register*); however, I recommend you use a separate repository (or repositories) to deploy them.
+
+[This repository](https://github.com/maikelpenz/dataflow-sample-workflow) is a great example to get yours up and running. Please go through its README file to fully understand how to configure it.  
