@@ -62,8 +62,6 @@ This github action automates the registration of workflows to Prefect Cloud. Thr
 
 The idea is that *dataflow-automation-infra* is only responsible for the infrastructure and workflows are placed in *one* or *many* external repositories. The following image illustrates how a workflow named `sample_workflow` is placed on a repository named `dataflow-sample-workflow` and uses the github action to register workflow versions for development and production environments. Once registered, the *prefect agent* listens to schedules/ad-hoc runs of this workflow and fires them to an AWS execution environment.
 
-<br>
-
 ![DeploymentProcess](images/deployment_process.png)
 
 <br>
