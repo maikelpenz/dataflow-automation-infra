@@ -37,18 +37,26 @@ This project maintains a custom Github Action responsible for **deploying workfl
 
 Four components are automatically deployed through the CI/CD pipeline of this repository. All steps are run across three different AWS environments (dev, test and prod)
 
-* AWS Infrastructure: cloud resources required to execute workflows
+* AWS Infrastructure: permanent cloud resources required to execute workflows
 * Prefect Agent Spin Up: this step builds the docker image where the Prefect Agent runs from and pushes it to AWS ECR
 * Prefect Project Set Up: creates the prefect project on Prefect Cloud
-* Prefect Workflow Register: Updates the Github Action responsible for registering workflows on Prefect Cloud
+* Prefect Workflow Register: Updates/maintains the Github Action responsible for registering workflows to Prefect Cloud
+
+<br>
+
+![FullView](images/full_view.png)
+
+<br>
 
 Besides deploying the components above, the CI/CD pipeline:
 
 - Runs unit tests in *dev*
 - Runs unit tests and functional tests in *test*
-<br>
 
-![FullView](images/full_view.png)
+There are two functional tests that validate:
+
+- Workflows can be pushed to Prefect Cloud using the *Workflow Register* Github Action
+- The Prefect Agent successfully spins up on AWS and also appears *as active* on Prefect Cloud's agent list. 
 
 <br>
 
