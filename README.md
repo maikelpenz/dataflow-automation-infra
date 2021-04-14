@@ -83,26 +83,27 @@ Pre requisites:
 * [Prefect Cloud Account](https://universal.prefect.io/signin/register)
 * [Github Account](https://github.com/join_next)
 
-These are the steps to deploy the execution environment infrastructure to your own AWS account:
 <br>
 
 #### 1 - AWS: configure access keys and create deployment buckets
 
-a) create access keys to be used by the Github CI/CD pipeline
-The Github CI/CD pipeline must be able to communicate with your AWS Account to deploy resources. Here we create keys to grant the right access.
+Pre requisite: AWS Account
+
+a) create IAM access keys to be used by the Github CI/CD pipeline to authenticate to AWS.
 
 - Log into your AWS account
-- Go to IAM > Users
+- Go to the *IAM* service, then *Users*
 - If you don't have a user created please click on `Add User`
 - On the _Security credentials_ tab click on `Create access key`
 - Copy both the _Access Key_ and the _Secret Access Key_ somewhere safe
 
-b) create S3 buckets for terraform state and terraform artifacts. On AWS, go to S3 and create 2 buckets. 
-Names must be globally unique. E.g:
+b) create S3 buckets to store Terraform state and artifacts. These buckets are used as part of the deployment process. 
+
+- On AWS, go to S3 and create 2 buckets. Names must be globally unique. E.g:
 
 `<account-number>-dataflow-automation-infra-artifacts` <br>
 `<account-number>-dataflow-automation-infra-tf-state`
-
+<br>
 
 #### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
 Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud to spin up the agent and also to register workflows.
