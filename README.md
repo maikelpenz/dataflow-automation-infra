@@ -67,7 +67,7 @@ The idea is that *dataflow-automation-infra* is only responsible for the infrast
 <br>
 
 &nbsp;<a name="deployment"/>
-## Deployment
+## Infrastructure Deployment
 
 This section works as a guide to deploy the project's infrastructure to your own environment. 
 By the end of it you will be able to register and execute workflows on your Prefect Cloud and AWS accounts, respectivelly.  
