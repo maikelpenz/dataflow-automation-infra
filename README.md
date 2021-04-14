@@ -95,9 +95,8 @@ b) create S3 buckets to store Terraform state and artifacts. These buckets are u
 
 `<account-number>-dataflow-automation-infra-artifacts` <br>
 `<account-number>-dataflow-automation-infra-tf-state`
-<br>
 
-#### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
+### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
 Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud to spin up the agent and also to register workflows.
 
 - Log into Prefect Cloud and under the top menu select `team` and then `Service Accounts`
