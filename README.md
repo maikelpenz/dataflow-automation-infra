@@ -5,7 +5,7 @@
 ## Table of Contents  
 [Summary](#summary)  
 [Architecture](#architecture)  
-[Deployment](#deployment)  
+[Infrastructure Deployment](#deployment)  
 <a name="summary"/>
 <br>
 
