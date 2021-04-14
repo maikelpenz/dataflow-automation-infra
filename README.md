@@ -56,7 +56,7 @@ Besides deploying the components above, the CI/CD pipeline:
 There are two functional tests that validate:
 
 - Workflows can be pushed to Prefect Cloud using the *Workflow Register* Github Action
-- The Prefect Agent successfully spins up on AWS and also appears *as active* on Prefect Cloud's agent list. 
+- The Prefect Agent successfully spins up on AWS ECS and it also appears *as active* on Prefect Cloud's agent list. 
 
 <br>
 
