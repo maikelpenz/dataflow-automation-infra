@@ -76,9 +76,8 @@ Pre requisites:
 * [AWS Account](https://aws.amazon.com/free/)
 * [Prefect Cloud Account](https://universal.prefect.io/signin/register)
 * [Github Account](https://github.com/join_next)
-<br>
 
-#### 1 - AWS: configure access keys and create deployment buckets
+### 1 - AWS: configure access keys and create deployment buckets
 
 Pre requisite: AWS Account
 
