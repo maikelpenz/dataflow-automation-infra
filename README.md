@@ -44,8 +44,6 @@ Four components are automatically deployed through the CI/CD pipeline of this re
 
 ![FullView](images/full_view.png)
 
-<br>
-
 Besides deploying the components above, the CI/CD pipeline:
 
 - Runs unit tests in *dev*
