@@ -16,17 +16,19 @@
 By saying that, the responsibility to *spin up* and *integrate* the execution layer with *Prefect Cloud* is on the customer's plate. This project works as a starting point for teams wanting to get up and running fast to experiment and deploy workflows with Prefect. Features:
 
 ### Automates the creation of execution environments on AWS
-[Terraform](https://www.terraform.io/) is an open-source infrastructure as code tool used to spin up resources in the cloud. This project takes advantage of Terraform to spin up executions environments to run workflows.
+[Terraform](https://www.terraform.io/) is an open-source infrastructure as code tool used to spin up resources in the cloud. This project takes advantage of Terraform to spin up executions environments on AWS to run workflows.
 <br>
 
 ### Integrates execution environments with Prefect Cloud
-[Prefect Agent](https://docs.prefect.io/orchestration/agents/overview.html) is a long running process used to communicate *execution environments* with *Prefect Cloud*. This project builds a container image to run the Prefect Agent and creates the infrastructure around it that guarantees it is fault-tolerant and can successfully authenticate to Prefect Cloud.
+[Prefect Agents](https://docs.prefect.io/orchestration/agents/overview.html) are a long running processes used to communicate *execution environments* with *Prefect Cloud*. This project builds up a container image to run the Prefect Agent and creates the infrastructure around it that guarantees it is fault-tolerant and that it can successfully authenticate to Prefect Cloud to register Prefect Agents.
 <br>
 
 ### Offers an interface to register workflows
 [Github Actions](https://github.com/features/actions) is a Github feature that automates the execution of workflows in response to events. It is used to define steps that build, test, and deploy projects on any platform while Github manages the pipeline execution. 
 <br>
-What makes Github Actions more interesting is that besides playing the common *CI/CD* role it also offers a marketplace of custom **actions** where developers can reuse existing logic to build their workflows and also publish their own **actions** for other developers/repositories to consume. 
+<br>
+What makes Github Actions more interesting is that besides configuring and running pipelines it also offers a [marketplace](https://github.com/marketplace) of custom *actions* where developers [publish their own actions](https://docs.github.com/en/actions/creating-actions) so other developers/repositories can consume them. 
+<br>
 <br>
 This project maintains a *custom Github Action* responsible for deploying workflows to Prefect Cloud. Other repositories can then point to this action to easily push their workflows to Prefect Cloud and run them inside AWS execution environments deployed by *dataflow-automation-infra*. Please [check this repository](https://github.com/maikelpenz/dataflow-sample-workflow) to see this custom action in use.
 
