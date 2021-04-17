@@ -78,6 +78,8 @@ Prerequisites:
 * [Prefect Cloud Account](https://universal.prefect.io/signin/register)
 * [Github Account](https://github.com/join_next)
 
+<br>
+
 ### 1 - AWS: configure access keys and create deployment buckets
 
 Pre requisite: AWS Account
@@ -97,6 +99,8 @@ b) create S3 buckets to store Terraform state and artifacts. These buckets are u
 `<account-number>-dataflow-automation-infra-artifacts` <br>
 `<account-number>-dataflow-automation-infra-tf-state`
 
+<br>
+
 ### 2 - Prefect Cloud: create _Agent_ and _Workflow Register_ API tokens 
 
 Pre requisite: Prefect Cloud Account
@@ -107,11 +111,15 @@ Both the Github CI/CD pipeline and AWS must be able to connect to Prefect Cloud 
 - Click on `Add Service Account` and put a name to your group of API keys. E.g: ApisGroup
 - use the `Create API Key` button to create 2 API keys: _PrefectAgent_ and _WorkflowRegister_. Make sure you copy the keys somewhere safe.
 
+<br>
+
 ### 3 - Github: Fork and Clone forked *dataflow-automation-infra*
 
 Pre requisite: Github Account
 
 - Fork and Clone this repository following the instructions [from this link](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
+
+<br>
 
 ### 4 - Github: Configure *YOUR_GITHUB_ACCOUNT/dataflow-automation-infra* secrets
 
@@ -133,6 +141,8 @@ The last thing to do is to enable Github Actions for this forked repository. By 
 
 - Using a web browser go to your forked repository on Github. On the top menu, click on `Actions`
 - Click on the green button `I understand my workflows..` 
+
+<br>
 
 ### 5 - Command line tool: Create branch to trigger the deployment pipeline
 
@@ -172,6 +182,8 @@ The *dataflow-automation-infra* repository - *partially* - follows the [Gitflow 
 
 - Using a web browser go to your forked repository on Github. On the top menu, click on `Actions`. You should see the github action for development run successfully from end-to-end.
 
+<br>
+
 ### 6 - Prefect Cloud and AWS: testing the deployed infrastructure
 As part of the _dev_ CI/CD pipeline, the last step registers a workflow named *dev_functional_workflow* to Prefect Cloud.
 
@@ -180,6 +192,8 @@ As part of the _dev_ CI/CD pipeline, the last step registers a workflow named *d
 - The workflow should succeed. If that is the case, you just confirmed the dev environment is working :tada:
 
 ![DevWorking](images/dev_working.png)
+
+<br>
 
 ### 7 - Deploying to test and production
 When merging your *feature branch* to *develop*, the *test* pipeline will be triggered to validate everything is working.
