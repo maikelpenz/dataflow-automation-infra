@@ -19,6 +19,7 @@ class ResourceCheckStatus(Enum):
 
 def is_resource_available(
     check_function: Callable,
+    parameters: str,
     wait_time_sec: int = 2,
     backoff_rate: int = 2,
     max_attempts: int = 10,
@@ -36,7 +37,12 @@ def is_resource_available(
     """
     for attempt in range(max_attempts):
         time.sleep(attempt * wait_time_sec * backoff_rate)
-        state = check_function()
+
+        if parameters is None:
+            state = check_function()
+        else:
+            state = check_function(parameters)
+
         if state == ResourceCheckStatus.FINISHED:
             return
         elif state != ResourceCheckStatus.RETRY:
